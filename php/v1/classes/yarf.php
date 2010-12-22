@@ -117,7 +117,7 @@ class Yarf extends ApiProducerDetails {
 		if(is_scalar($input)) {
 			if(array_key_exists('archive', $config)) {
 				if(array_key_exists('paths', $config['archive'])) {
-					$paths = explode(':', $config['archive']['paths']);
+					$paths = explode(PATH_SEPARATOR, $config['archive']['paths']);
 
 					foreach($paths as $path) {
 						if(is_dir($path . '/' . $input)) {

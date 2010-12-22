@@ -40,13 +40,13 @@ class Collectd extends Yarf {
 		global $config;
 
 		if(array_key_exists('archive', $config)) {
-			foreach(explode(':', $config['archive']['paths']) as $path) {
+			foreach(explode(PATH_SEPARATOR, $config['archive']['paths']) as $path) {
 				$this->archives[] = $path . '/collectd/';
 			}
 		}
 
 		if(array_key_exists('collectd', $config)) {
-			$this->paths = explode(':', $config['collectd']['paths']);
+			$this->paths = explode(PATH_SEPARATOR, $config['collectd']['paths']);
 		}
 	}
 }
