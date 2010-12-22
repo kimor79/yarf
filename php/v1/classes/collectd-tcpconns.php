@@ -158,7 +158,7 @@ class CollectdGraph extends Collectd {
 				$glob_dir .= $vector . '/tcp_connections-';
 				$glob_dir .= $state . '.rrd';
 
-				foreach(glob($glob_dir) as $file) {
+				foreach(glob($glob_dir, GLOB_BRACE) as $file) {
 					$rrd[] = 'DEF:' . $vector . $node . $num . '=' . $file . ':value:AVERAGE';
 					$rrd[] = 'DEF:min' . $vector . $node . $num . '=' . $file . ':value:MIN';
 					$rrd[] = 'DEF:max' . $vector . $node . $num . '=' . $file . ':value:MAX';
