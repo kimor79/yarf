@@ -134,6 +134,8 @@ class CollectdGraph extends Collectd {
 		$rrd = $this->rrdHeader($nodes, $options, 'tcpconns' . $label);
 		$rrd[] = '-l';
 		$rrd[] = 0;
+		$rrd[] = '-v';
+		$rrd[] = 'Connections';
 
 		$combine = array();
 		$count = 0;
@@ -202,13 +204,15 @@ class CollectdGraph extends Collectd {
 
 		$rrd = array_merge($rrd, array_values($combine));
 
+		$rrd = array_merge($rrd, $this->rrdDate($options));
+
 		foreach($has_vector as $vector) {
 			$rrd[] = 'VDEF:last' . $vector . '=' . $vector . ',LAST';
 			$rrd[] = 'LINE1:' . $vector . $this->directions[$vector] . ':' . $vector;
-			$rrd[] = 'GPRINT:min' . $vector . ':MIN:Min\: %7.2lf%s';
-			$rrd[] = 'GPRINT:' . $vector . ':AVERAGE:Avg\: %7.2lf%s';
-			$rrd[] = 'GPRINT:max' . $vector . ':MAX:Max\: %7.2lf%s';
-			$rrd[] = 'GPRINT:last' . $vector . ':Last\: %7.2lf%s';
+			$rrd[] = 'GPRINT:min' . $vector . ':MIN:Min\: %5.2lf%s';
+			$rrd[] = 'GPRINT:' . $vector . ':AVERAGE:Avg\: %5.2lf%s';
+			$rrd[] = 'GPRINT:max' . $vector . ':MAX:Max\: %5.2lf%s';
+			$rrd[] = 'GPRINT:last' . $vector . ':Last\: %5.2lf\j';
 		}
 
 		return $rrd;
