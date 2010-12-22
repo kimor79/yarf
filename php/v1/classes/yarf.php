@@ -58,6 +58,22 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
+	 * Generate the date (which may be an archive date)
+	 * @param array $options
+	 * @return array
+	 */
+	protected function rrdDate($options = array()) {
+		$date = date('r');
+
+		$rrd = array(
+			'COMMENT:' . str_replace(':', '\:', $date) . '\c',
+			'COMMENT:\s',
+		);
+
+		return $rrd;
+	}
+
+	/**
 	 * Generate standard rrd options
 	 * @param array $nodes
 	 * @param array $options
