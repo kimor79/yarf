@@ -111,7 +111,7 @@ if(array_key_exists('node', $input)) {
 	if(is_array($input['node'])) {
 		$nodes = array_merge($nodes, $input['node']);
 	} else {
-		$nodes = array_merge($nodes, explode(',', $input['node']));
+		$nodes = array_merge($nodes, explode($api->multi_separator, $input['node']));
 	}
 }
 
