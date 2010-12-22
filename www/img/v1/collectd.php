@@ -156,6 +156,14 @@ if(!is_array($return)) {
 	exit(0);
 }
 
+if(array_key_exists('debug', $input)) {
+	if($api->trueFalse($input['debug'], false)) {
+		$api->sendHeaders();
+		$api->showOutput('200', 'OK', $options);
+		exit(0);
+	}
+}
+
 $api->sendHeaders();
 echo file_get_contents($out_file);
 //@unlink($out_file);

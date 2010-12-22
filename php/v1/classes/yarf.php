@@ -35,6 +35,7 @@ class Yarf extends ApiProducerDetails {
 
 	public $optional = array(
 		'archive' => 'archive',
+		'debug' => 'bool',
 	);
 
 	public $required = array();
