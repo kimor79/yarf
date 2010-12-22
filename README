@@ -1,0 +1,5 @@
+Yet Another Rrd Frontend
+
+Key features:
+ * On-the-fly aggregate graphing of any group of nodes
+ * Archival of rrd files
