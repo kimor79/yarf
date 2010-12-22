@@ -54,9 +54,9 @@ class CollectdGraph extends Collectd {
 	public function __construct() {
 		parent::__construct();
 
-		$this->optional['direction'] = 'direction';
+		$this->optional['direction'] = '_multi_direction';
 		$this->optional['port'] = '_multi_digit';
-		$this->optional['state'] = 'state';
+		$this->optional['state'] = '_multi_state';
 	}
 
 	/**
@@ -216,30 +216,11 @@ class CollectdGraph extends Collectd {
 
 	/**
 	 * Validate direction
-	 * @param mixed $input
+	 * @param string $input
 	 */
 	protected function validateInput_direction($input) {
-		$tests = array();
-
-		if(is_array($input)) {
-			$tests = $input;
-		} else {
-			$tests = explode(',', $input);
-		}
-
-		$count = 0;
-		$total = count($tests);
-
-		foreach($tests as $test) {
-			if(array_key_exists(strtolower($test), $this->directions)) {
-				$count++;
-			}
-		}
-
-		if($total > 0) {
-			if($count === $total) {
-				return true;
-			}
+		if(array_key_exists(strtolower($input), $this->directions)) {
+			return true;
 		}
 
 		return false;
@@ -247,30 +228,11 @@ class CollectdGraph extends Collectd {
 
 	/**
 	 * Validate state
-	 * @param mixed $input
+	 * @param string $input
 	 */
 	protected function validateInput_state($input) {
-		$tests = array();
-
-		if(is_array($input)) {
-			$tests = $input;
-		} else {
-			$tests = explode(',', $input);
-		}
-
-		$count = 0;
-		$total = count($tests);
-
-		foreach($tests as $test) {
-			if(in_array(strtoupper($test), $this->states)) {
-				$count++;
-			}
-		}
-
-		if($total > 0) {
-			if($count === $total) {
-				return true;
-			}
+		if(in_array(strtoupper($input), $this->states)) {
+			return true;
 		}
 
 		return false;
