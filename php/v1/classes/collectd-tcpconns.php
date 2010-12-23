@@ -60,13 +60,30 @@ class CollectdGraph extends Collectd {
 	}
 
 	/**
-	 * Verify if rrd files exist for given node
+	 * Verify if rrd files exist for node
 	 * @param string $node
 	 * @param array $options
-	 * @return string The path or false
+	 * @return bool
 	 */
 	public function rrdExists($node = '', $options = array()) {
+		$glob = $this->rrdFiles($node, $options);
+
+		if(!empty($glob)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the rrd files
+	 * @param string $node
+	 * @param array $options
+	 * @return array array for each direction
+	 */
+	public function rrdFiles($node = '', $options = array()) {
 		$archive = '';
+		$files = array();
 		$paths = $this->paths;
 
 		if(array_key_exists('archive', $options)) {
@@ -74,30 +91,12 @@ class CollectdGraph extends Collectd {
 			$paths = $this->archives;
 		}
 
-		foreach($paths as $path) {
-			$exists = $path . '/' . $archive . '/' . $node;
-
-			if(file_exists($exists . '/' . $this->test_file)) {
-				return $exists;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Build the rrd options array
-	 * @param array $nodes
-	 * @param array $options
-	 * @return array
-	 */
-	public function rrdOptions($nodes = array(), $options = array()) {
 		$port = '*';
 		if(array_key_exists('port', $options)) {
 			if(is_array($options['port'])) {
 				$port = '{' . implode(',', $options['port']) . '}';
 			} else {
-				$t_port = explode(',', $options['port']);
+				$t_port = explode($this->multi_separator, $options['port']);
 				if(count($t_port) > 1) {
 					$port = '{' . implode(',', $t_port) . '}';
 				} else {
@@ -106,17 +105,15 @@ class CollectdGraph extends Collectd {
 			}
 		}
 
-		$label = '';
 		$state = '*';
 		if(array_key_exists('state', $options)) {
 			if(is_array($options['state'])) {
 				$state = '{' . strtoupper(implode(',', $options['state'])) . '}';
 			} else {
-				$t_state = explode(',', $options['state']);
+				$t_state = explode($this->multi_separator, $options['state']);
 				if(count($t_state) > 1) {
 					$state = '{' . strtoupper(implode(',', $t_state)) . '}';
 				} else {
-					$label = '/' . strtoupper($options['state']);
 					$state = strtoupper($options['state']);
 				}
 			}
@@ -127,7 +124,49 @@ class CollectdGraph extends Collectd {
 			if(is_array($options['direction'])) {
 				$vectors = $options['direction'];
 			} else {
-				$vectors = explode(',', $options['direction']);
+				$vectors = explode($this->multi_separator, $options['direction']);
+			}
+		}
+
+		foreach($vectors as $vector) {
+			foreach($paths as $path) {
+				$g_path = $path . '/' . $archive . '/' . $node;
+				$g_path .= '/tcpconns-' . $port . '-' . $vector;
+				$g_path .= '/tcp_connections-' . $state . '.rrd';
+
+				$glob = glob($g_path, GLOB_BRACE);
+				if(!empty($glob)) {
+					$files[$vector] = $glob;
+					continue 2;
+				}
+			}
+		}
+
+		return $files;
+	}
+
+	/**
+	 * Build the rrd options array
+	 * @param array $nodes
+	 * @param array $options
+	 * @return array
+	 */
+	public function rrdOptions($nodes = array(), $options = array()) {
+		$label = '';
+		if(array_key_exists('state', $options)) {
+			if(!is_array($options['state'])) {
+				$t_state = explode($this->multi_separator, $options['state']);
+				if(count($t_state) == 1) {
+					$label = '/' . strtoupper($options['state']);
+				}
+			}
+		}
+
+		if(array_key_exists('port', $options)) {
+			if(is_array($options['port'])) {
+				$label .= ' - ' . implode(',', $options['port']);
+			} else {
+				$label .= ' - ' . $options['port'];
 			}
 		}
 
@@ -142,50 +181,42 @@ class CollectdGraph extends Collectd {
 		$has_vector = array();
 
 		foreach($nodes as $node) {
-			$dir = $this->rrdExists($node, $options);
+			$vectors = $this->rrdFiles($node, $options);
 
-			if(!$dir) {
+			if(empty($vectors)) {
 				continue;
 			}
 
 			$node = str_replace('.', '_', $node);
 
-			$t_has_vector = array();
-
-			foreach($vectors as $vector) {
+			foreach($vectors as $vector => $files) {
 				$num = 0;
 				$t_combine = array();
 
-				$glob_dir = $dir . '/tcpconns-' . $port . '-';
-				$glob_dir .= $vector . '/tcp_connections-';
-				$glob_dir .= $state . '.rrd';
+				foreach($files as $o_file) {
+					$file = str_replace(array('/', '.'), '_', $o_file);
 
-				foreach(glob($glob_dir, GLOB_BRACE) as $file) {
-					$rrd[] = 'DEF:' . $vector . $node . $num . '=' . $file . ':value:AVERAGE';
-					$rrd[] = 'DEF:min' . $vector . $node . $num . '=' . $file . ':value:MIN';
-					$rrd[] = 'DEF:max' . $vector . $node . $num . '=' . $file . ':value:MAX';
+					$rrd[] = 'DEF:' . $file . '=' . $o_file . ':value:AVERAGE';
+					$rrd[] = 'DEF:min' . $file . '=' . $o_file . ':value:MIN';
+					$rrd[] = 'DEF:max' . $file . '=' . $o_file . ':value:MAX';
 
 					if($num == 0) {
-						$t_combine['avg'] = 'CDEF:' . $vector . $node . '=' . $vector . $node . $num;
-						$t_combine['min'] = 'CDEF:min' . $vector . $node . '=' . $vector . $node . $num;
-						$t_combine['max'] = 'CDEF:max' . $vector . $node . '=' . $vector . $node . $num;
+						$t_combine['avg'] = 'CDEF:' . $vector . $node . '=' . $file;
+						$t_combine['min'] = 'CDEF:min' . $vector . $node . '=min' . $file;
+						$t_combine['max'] = 'CDEF:max' . $vector . $node . '=min' . $file;
 					} else {
-						$t_combine['avg'] .= ',' . $vector . $node . $num . ',ADDNAN';
-						$t_combine['min'] .= ',min' . $vector . $node . $num . ',ADDNAN';
-						$t_combine['max'] .= ',max' . $vector . $node . $num . ',ADDNAN';
+						$t_combine['avg'] .= ',' . $file . ',ADDNAN';
+						$t_combine['min'] .= ',min' . $file . ',ADDNAN';
+						$t_combine['max'] .= ',max' . $file . ',ADDNAN';
 					}
 
 					$num++;
 				}
 
-				if($num > 0) {
-					$t_has_vector[$vector] = $vector;
-				}
-
 				$rrd = array_merge($rrd, array_values($t_combine));
 			}
 
-			foreach($t_has_vector as $vector) {
+			foreach($vectors as $vector => $junk) {
 				if($count == 0) {
 					$combine['avg' . $vector] = 'CDEF:' . $vector . '=' . $vector . $node;
 					$combine['min' . $vector] = 'CDEF:min' . $vector . '=min' . $vector . $node;
