@@ -55,6 +55,10 @@ class CollectdGraph extends Collectd {
 		$this->optional['direction'] = '_multi_direction';
 		$this->optional['port'] = '_multi_digit';
 		$this->optional['state'] = '_multi_state';
+
+		$this->sanitize['direction'] = '_multi_';
+		$this->sanitize['port'] = '_multi_';
+		$this->sanitize['state'] = '_multi_';
 	}
 
 	/**
@@ -91,39 +95,25 @@ class CollectdGraph extends Collectd {
 
 		$port = '*';
 		if(array_key_exists('port', $options)) {
-			if(is_array($options['port'])) {
+			if(count($options['port']) > 1) {
 				$port = '{' . implode(',', $options['port']) . '}';
 			} else {
-				$t_port = explode($this->multi_separator, $options['port']);
-				if(count($t_port) > 1) {
-					$port = '{' . implode(',', $t_port) . '}';
-				} else {
-					$port = $options['port'];
-				}
+				$port = $options['port'][0];
 			}
 		}
 
 		$state = '*';
 		if(array_key_exists('state', $options)) {
-			if(is_array($options['state'])) {
-				$state = '{' . strtoupper(implode(',', $options['state'])) . '}';
+			if(count($options['state']) > 1) {
+				$state = '{' . implode(',', $options['state']) . '}';
 			} else {
-				$t_state = explode($this->multi_separator, $options['state']);
-				if(count($t_state) > 1) {
-					$state = '{' . strtoupper(implode(',', $t_state)) . '}';
-				} else {
-					$state = strtoupper($options['state']);
-				}
+				$state = $options['state'][0];
 			}
 		}
 
 		$vectors = array_keys($this->directions);
 		if(array_key_exists('direction', $options)) {
-			if(is_array($options['direction'])) {
-				$vectors = $options['direction'];
-			} else {
-				$vectors = explode($this->multi_separator, $options['direction']);
-			}
+			$vectors = $options['direction'];
 		}
 
 		foreach($vectors as $vector) {
@@ -245,6 +235,24 @@ class CollectdGraph extends Collectd {
 		}
 
 		return $rrd;
+	}
+
+	/**
+	 * Sanitize direction
+	 * @param string $input
+	 * @return string
+	 */
+	protected function sanitizeInput_direction($input) {
+		return strtolower($input);
+	}
+
+	/**
+	 * Sanitize state
+	 * @param string $input
+	 * @return string
+	 */
+	protected function sanitizeInput_state($input) {
+		return strtoupper($input);
 	}
 
 	/**
