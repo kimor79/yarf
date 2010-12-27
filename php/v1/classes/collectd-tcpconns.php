@@ -142,20 +142,13 @@ class CollectdGraph extends Collectd {
 	public function rrdOptions($nodes = array(), $options = array()) {
 		$label = '';
 		if(array_key_exists('state', $options)) {
-			if(!is_array($options['state'])) {
-				$t_state = explode($this->multi_separator, $options['state']);
-				if(count($t_state) == 1) {
-					$label = '/' . strtoupper($options['state']);
-				}
+			if(count($options['state']) == 1) {
+				$label = '/' . $options['state'][0];
 			}
 		}
 
 		if(array_key_exists('port', $options)) {
-			if(is_array($options['port'])) {
-				$label .= ' - ' . implode(',', $options['port']);
-			} else {
-				$label .= ' - ' . $options['port'];
-			}
+			$label .= ' - ' . implode(',', $options['port']);
 		}
 
 		$rrd = $this->rrdHeader($nodes, $options, 'tcpconns' . $label);
