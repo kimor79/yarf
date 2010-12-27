@@ -36,9 +36,15 @@ class Yarf extends ApiProducerDetails {
 	public $optional = array(
 		'archive' => 'archive',
 		'debug' => 'bool',
+		'expression' => NULL,
+		'node' => '_multi_',
 	);
 
 	public $required = array();
+
+	public $sanitize = array(
+		'node' => '_multi_',
+	);
 
 	private $trim_domain = false;
 

@@ -94,6 +94,8 @@ if(!empty($errors)) {
 	exit(0);
 }
 
+$input = $api->sanitizeInput($input, $api->sanitize);
+
 $nodes = array();
 
 if(array_key_exists('expression', $input)) {
@@ -101,11 +103,7 @@ if(array_key_exists('expression', $input)) {
 }
 
 if(array_key_exists('node', $input)) {
-	if(is_array($input['node'])) {
-		$nodes = array_merge($nodes, $input['node']);
-	} else {
-		$nodes = array_merge($nodes, explode($api->multi_separator, $input['node']));
-	}
+	$nodes = array_merge($nodes, $input['node']);
 }
 
 if(empty($nodes)) {
