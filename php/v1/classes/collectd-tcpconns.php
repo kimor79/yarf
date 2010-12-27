@@ -49,8 +49,6 @@ class CollectdGraph extends Collectd {
 		'TIME_WAIT',
 	);
 
-	private $test_file = 'tcpconns-22-local/tcp_connections-LISTEN.rrd';
-
 	public function __construct() {
 		parent::__construct();
 
