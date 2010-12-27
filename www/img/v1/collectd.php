@@ -32,14 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $default_format = 'png';
 
 require_once('yarf/v1/includes/config.php');
-
-if(!file_exists('/usr/local/etc/yarf/collectd.php')) {
-	$yarf->sendHeaders();
-	$yarf->showOutput('500', 'Error with collectd config');
-	exit(0);
-}
-
-require_once('/usr/local/etc/yarf/collectd.php');
+require_once('yarf/v1/includes/collectd.php');
 
 if(empty($plugins)) {
 	$yarf->sendHeaders();
