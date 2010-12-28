@@ -75,13 +75,14 @@ class CollectdGraph extends Collectd {
 	 * @return array array for each transfer_type
 	 */
 	public function rrdFiles($node = '', $options = array()) {
-		$archive = '';
 		$files = array();
 		$paths = $this->paths;
 
 		if(array_key_exists('archive', $options)) {
-			$archive = $options['archive'];
-			$paths = $this->archives;
+			$archive = $this->findArchive($options['archive']);
+
+			if($archive) {
+				$paths = array($archive . '/collectd');
 		}
 
 		$ip_version = '*';
@@ -100,7 +101,7 @@ class CollectdGraph extends Collectd {
 
 		foreach($transfers as $transfer) {
 			foreach($paths as $path) {
-				$g_path = $path . '/' . $archive . '/' . $node;
+				$g_path = $path . '/' . $node;
 				$g_path .= '/bind-global-zone_maint_stats/dns_opcode-';
 				$g_path .= $transfer . '-' . $ip_version . '.rrd';
 

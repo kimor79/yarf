@@ -33,6 +33,8 @@ require_once('api_producer/v1/classes/details.php');
 
 class Yarf extends ApiProducerDetails {
 
+	private $archive_path = '';
+
 	public $optional = array(
 		'archive' => 'archive',
 		'debug' => 'bool',
@@ -58,10 +60,42 @@ class Yarf extends ApiProducerDetails {
 		global $config;
 
 		if(is_array($config)) {
+			if(array_key_exists('archive', $config)) {
+				$this->archives = explode(PATH_SEPARATOR, $config['archive']['paths']);
+			}
+
 			if(array_key_exists('trim_domain', $config)) {
 				$this->trim_domain = $config['trim_domain'];
 			}
 		}
+	}
+
+	/**
+	 * Find archive path
+	 * @param string $archive
+	 * @return string
+	 */
+	protected function findArchive($archive) {
+		global $config;
+
+		if($this->archive_path) {
+			return $this->archive_path;
+		}
+
+		if(array_key_exists('archive', $config)) {
+			if(array_key_exists('paths', $config['archive'])) {
+				$paths = explode(PATH_SEPARATOR, $config['archive']['paths']);
+
+				foreach($paths as $path) {
+					if(is_dir($path . '/' . $archive)) {
+						$this->archive_path = $path . '/' . $archive;
+						return $path . '/' . $archive;
+					}
+				}
+			}
+		}
+
+		return '';
 	}
 
 	/**
@@ -71,6 +105,15 @@ class Yarf extends ApiProducerDetails {
 	 */
 	protected function rrdDate($options = array()) {
 		$date = date('r');
+
+		if(array_key_exists('archive', $options)) {
+			$file = $this->findArchive($options['archive']) . '/timestamp';
+			if(is_file($file)) {
+				$time = file_get_contents($file);
+				$time = trim($time);
+				$date = date('r', $time);
+			}
+		}
 
 		$rrd = array(
 			'COMMENT:' . str_replace(':', '\:', $date) . '\c',
@@ -105,6 +148,15 @@ class Yarf extends ApiProducerDetails {
 
 		if(array_key_exists('archive', $options)) {
 			$label .= ' - ' . $options['archive'];
+
+			$file = $this->findArchive($options['archive']) . '/timestamp';
+			if(is_file($file)) {
+				$time = file_get_contents($file);
+				$time = trim($time);
+
+				$rrd[] = '--end';
+				$rrd[] = $time;
+			}
 		}
                 
 		$rrd[] = $label;

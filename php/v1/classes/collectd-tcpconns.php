@@ -84,13 +84,15 @@ class CollectdGraph extends Collectd {
 	 * @return array array for each direction
 	 */
 	public function rrdFiles($node = '', $options = array()) {
-		$archive = '';
 		$files = array();
 		$paths = $this->paths;
 
 		if(array_key_exists('archive', $options)) {
-			$archive = $options['archive'];
-			$paths = $this->archives;
+			$archive = $this->findArchive($options['archive']);
+
+			if($archive) {
+				$paths = array($archive . '/collectd');
+			}
 		}
 
 		$port = '*';
@@ -118,7 +120,7 @@ class CollectdGraph extends Collectd {
 
 		foreach($vectors as $vector) {
 			foreach($paths as $path) {
-				$g_path = $path . '/' . $archive . '/' . $node;
+				$g_path = $path . '/' . $node;
 				$g_path .= '/tcpconns-' . $port . '-' . $vector;
 				$g_path .= '/tcp_connections-' . $state . '.rrd';
 

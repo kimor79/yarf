@@ -31,19 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Collectd extends Yarf {
 
-	protected $archives = array();
 	protected $paths = array();
 
 	public function __construct() {
 		parent::__construct();
 
 		global $config;
-
-		if(array_key_exists('archive', $config)) {
-			foreach(explode(PATH_SEPARATOR, $config['archive']['paths']) as $path) {
-				$this->archives[] = $path . '/collectd/';
-			}
-		}
 
 		if(array_key_exists('collectd', $config)) {
 			$this->paths = explode(PATH_SEPARATOR, $config['collectd']['paths']);
