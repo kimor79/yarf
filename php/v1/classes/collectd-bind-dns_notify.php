@@ -48,7 +48,7 @@ class CollectdGraph extends Collectd {
 		$this->optional['ip_version'] = '_multi_ip_version';
 
 		$this->sanitize['direction'] = '_multi_';
-		$this->sanitize['ip_version'] = '_multi_';
+		$this->sanitize['ip_version'] = '_multi_ip_version';
 	}
 
 	/**
