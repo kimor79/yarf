@@ -203,7 +203,7 @@ class CollectdGraph extends Collectd {
 
 		foreach($has_vector as $vector) {
 			$rrd[] = 'VDEF:last' . $vector . '=' . $vector . ',LAST';
-			$rrd[] = 'LINE1:' . strtoupper($vector) . $this->directions[$vector] . ':' . $vector;
+			$rrd[] = 'LINE1:' . $vector . $this->directions[$vector] . ':' . strtoupper($vector);
 			$rrd[] = 'GPRINT:min' . $vector . ':MIN:Min\: %5.2lf%s';
 			$rrd[] = 'GPRINT:' . $vector . ':AVERAGE:Avg\: %5.2lf%s';
 			$rrd[] = 'GPRINT:max' . $vector . ':MAX:Max\: %5.2lf%s';
