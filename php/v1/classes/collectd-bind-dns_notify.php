@@ -255,7 +255,7 @@ class CollectdGraph extends Collectd {
 	 * @param string $input
 	 */
 	protected function validateInput_ip_version($input) {
-		if(preg_match('/^(?:IP)+v+[46]/i', $input) == 1) {
+		if(preg_match('/^(?:IP)?v?[46]$/i', $input) == 1) {
 			return true;
 		}
 
