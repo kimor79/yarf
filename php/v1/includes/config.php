@@ -49,6 +49,7 @@ if(empty($config)) {
 }
 
 function get_config($key = '', $sub = '') {
+	global $config;
 	if(array_key_exists($key, $config)) {
 		if(!empty($sub)) {
 			if(array_key_exists($sub, $config[$key])) {
