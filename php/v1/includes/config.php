@@ -48,4 +48,18 @@ if(empty($config)) {
 	exit(0);
 }
 
+function get_config($key = '', $sub = '') {
+	if(array_key_exists($key, $config)) {
+		if(!empty($sub)) {
+			if(array_key_exists($sub, $config[$key])) {
+				return $config[$key][$sub];
+			}
+		}
+
+		return $config[$key];
+	}
+
+	return NULL;
+}
+
 ?>
