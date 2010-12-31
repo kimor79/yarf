@@ -50,6 +50,21 @@ if(empty($config)) {
 
 function get_config($key = '', $sub = '') {
 	global $config;
+
+	$defaults = array(
+		'archive' => array(
+			'paths' => '/yarf/archive',
+		),
+
+		'collectd' => array(
+			'paths' => '/var/db/collectd',
+		),
+
+		'yui' => array(
+			'base_uri' => 'http://yui.yahooapis.com/2.8.2r1/build',
+		),
+	);
+
 	if(array_key_exists($key, $config)) {
 		if(!empty($sub)) {
 			if(array_key_exists($sub, $config[$key])) {
@@ -58,6 +73,16 @@ function get_config($key = '', $sub = '') {
 		}
 
 		return $config[$key];
+	}
+
+	if(array_key_exists($key, $defaults)) {
+		if(!empty($sub)) {
+			if(array_key_exists($sub, $defaults[$key])) {
+				return $defaults[$key][$sub];
+			}
+		}
+
+		return $defaults[$key];
 	}
 
 	return NULL;
