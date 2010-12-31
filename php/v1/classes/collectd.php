@@ -36,11 +36,7 @@ class Collectd extends Yarf {
 	public function __construct() {
 		parent::__construct();
 
-		global $config;
-
-		if(array_key_exists('collectd', $config)) {
-			$this->paths = explode(PATH_SEPARATOR, $config['collectd']['paths']);
-		}
+		$this->paths = explode(PATH_SEPARATOR, get_config('collectd', 'paths'));
 	}
 }
 

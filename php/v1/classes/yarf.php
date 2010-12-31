@@ -57,16 +57,8 @@ class Yarf extends ApiProducerDetails {
 
 		$this->contentType('png', 'image/png');
 
-		global $config;
-
-		if(is_array($config)) {
-			if(array_key_exists('archive', $config)) {
-				$this->archives = explode(PATH_SEPARATOR, $config['archive']['paths']);
-			}
-
-			if(array_key_exists('trim_domain', $config)) {
-				$this->trim_domain = $config['trim_domain'];
-			}
+		if(function_exists('get_config')) {
+			$this->trim_domain = get_config('trim_domain');
 		}
 	}
 
@@ -76,22 +68,16 @@ class Yarf extends ApiProducerDetails {
 	 * @return string
 	 */
 	protected function findArchive($archive) {
-		global $config;
-
 		if($this->archive_path) {
 			return $this->archive_path;
 		}
 
-		if(array_key_exists('archive', $config)) {
-			if(array_key_exists('paths', $config['archive'])) {
-				$paths = explode(PATH_SEPARATOR, $config['archive']['paths']);
+		$paths = explode(PATH_SEPARATOR, get_config('archive', 'paths'));
 
-				foreach($paths as $path) {
-					if(is_dir($path . '/' . $archive)) {
-						$this->archive_path = $path . '/' . $archive;
-						return $path . '/' . $archive;
-					}
-				}
+		foreach($paths as $path) {
+			if(is_dir($path . '/' . $archive)) {
+				$this->archive_path = $path . '/' . $archive;
+				return $path . '/' . $archive;
 			}
 		}
 
@@ -187,19 +173,9 @@ class Yarf extends ApiProducerDetails {
 	 * @return bool
 	 */
 	protected function validateInput_archive($input) {
-		global $config; // Assumes $config has been correctly populated
-
 		if(is_scalar($input)) {
-			if(array_key_exists('archive', $config)) {
-				if(array_key_exists('paths', $config['archive'])) {
-					$paths = explode(PATH_SEPARATOR, $config['archive']['paths']);
-
-					foreach($paths as $path) {
-						if(is_dir($path . '/' . $input)) {
-							return true;
-						}
-					}
-				}
+			if($this->findArchive($input)) {
+				return true;
 			}
 		}
 
