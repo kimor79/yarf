@@ -82,19 +82,8 @@ label {
  <head>
 
 <body class="yui-skin-sam">
-<?php
-if(get_config('use_nodegroups')) {
-?>
- <div id="layouttop"><?php include('yarf/v1/includes/node_form.php'); ?></div>
- <div id="layoutleft"><?php include('yarf/v1/includes/graph_form.php'); ?></div>
-<?php
-} else {
-?>
  <div id="layouttop"><?php include('yarf/v1/includes/graph_form.php'); ?></div>
  <div id="layoutleft"><?php include('yarf/v1/includes/node_form.php'); ?></div>
-<?php
-}
-?>
  <div id="layoutcenter"><?php include('yarf/v1/includes/graph_view.php'); ?></div>
  <div id="layoutright"><?php include('yarf/v1/includes/node_list.php'); ?></div>
 </body>
