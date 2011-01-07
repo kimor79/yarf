@@ -37,8 +37,7 @@ require_once('yarf/v1/includes/config.php');
 
 <table>
  <tr>
-  <td colspan="2"><label for="time">Time:</label></td>
- </tr>
+  <td><label for="time">Time:</label></td>
   <td>
 <select name="time_number">
  <option value="1">1</option> 
@@ -64,5 +63,12 @@ require_once('yarf/v1/includes/config.php');
  <option value="year">years</option>
 </select>
   </td>
+ </tr>
+</table>
+
+<table>
+ <tr>
+  <td><label for="archive">Archive:</label></td>
+  <td><input type="text" name="archive" value="<?php echo $_GET['archive']; ?>" size="7"></td>
  </tr>
 </table>
