@@ -160,6 +160,6 @@ if(array_key_exists('debug', $input)) {
 
 $api->sendHeaders();
 echo file_get_contents($out_file);
-//@unlink($out_file);
+@unlink($out_file);
 
 ?>
