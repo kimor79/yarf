@@ -97,13 +97,13 @@ Event.onDOMReady(function() {
 		units: [
 			{
 				body: 'layoutcenter',
-				gutter: '5px',
+				gutter: '0px 5px 5px 5px',
 				position: 'center'
 			},
 			{
 				body: 'layoutleft',
 				collapse: false,
-				gutter: '5px',
+				gutter: '0px 0px 5px 5px',
 				position: 'left',
 				resize: true,
 				width: 250
@@ -111,7 +111,7 @@ Event.onDOMReady(function() {
 			{
 				body: 'layoutright',
 				collapse: false,
-				gutter: '5px',
+				gutter: '0px 5px 5px 0px',
 				position: 'right',
 				resize: true,
 				width: 200
@@ -119,7 +119,7 @@ Event.onDOMReady(function() {
 			{
 				body: 'layouttop',
 				collapse: false,
-				gutter: '5px',
+				gutter: '5px 5px 5px 5px',
 				height: 150,
 				position: 'top',
 				resize: true
