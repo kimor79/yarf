@@ -67,23 +67,23 @@ if(is_array($config)) {
 		);
 
 		if(array_key_exists($key, $config)) {
-			if(!empty($sub)) {
+			if(empty($sub)) {
+				return $config[$key];
+			} else {
 				if(array_key_exists($sub, $config[$key])) {
 					return $config[$key][$sub];
 				}
 			}
-
-			return $config[$key];
 		}
 
 		if(array_key_exists($key, $defaults)) {
-			if(!empty($sub)) {
+			if(empty($sub)) {
+				return $defaults[$key];
+			} else {
 				if(array_key_exists($sub, $defaults[$key])) {
 					return $defaults[$key][$sub];
 				}
 			}
-
-			return $defaults[$key];
 		}
 
 		return NULL;
