@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-class CollectdGraph extends Collectd {
+class CollectdGraphBindDnsNotify extends Collectd {
 
 	private $directions = array(
 		'rx' => '#3020ee',

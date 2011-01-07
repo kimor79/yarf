@@ -46,18 +46,21 @@ if(!array_key_exists('plugin', $req)) {
 	exit(0);
 }
 
-if(!in_array($req['plugin'], $plugins)) {
+if(!array_key_exists($req['plugin'], $plugins)) {
 	$yarf->sendHeaders();
 	$yarf->showOutput('400', 'No such plugin');
 	exit(0);
 }
 
+$plugin = $plugins[$req['plugin']];
+
 require_once('yarf/v1/classes/collectd.php');
-require_once('yarf/v1/classes/collectd-' . $req['plugin'] . '.php');
+require_once('yarf/v1/classes/collectd-' . $plugin['file'] . '.php');
 
 unset($req['plugin']);
 
-$api = new CollectdGraph();
+$class = 'CollectdGraph' . $plugin['class'];
+$api = new $class();
 
 $api->setParameters($req, array('outputFormat' => $default_format));
 $input = $api->setInput($req);

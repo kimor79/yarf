@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-class CollectdGraph extends Collectd {
+class CollectdGraphTcpConns extends Collectd {
 
 	private $directions = array(
 		'local' => '#3020ee',
