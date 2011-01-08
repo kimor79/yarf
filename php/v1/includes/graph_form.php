@@ -32,43 +32,80 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $default_format = 'print_r';
 
 require_once('yarf/v1/includes/config.php');
+require_once('yarf/v1/includes/available_graphs.php');
 
 ?>
 
+<table width="99%">
+ <tr>
+<?php
+for($graph_num = 1; $graph_num < 5; $graph_num++) {
+?>
+<!-- Begin column <?php echo $graph_num; ?> -->
+  <td>
+
+<form id="graph<?php echo $graph_num; ?>" onSubmit="return false;">
 <table>
  <tr>
-  <td><label for="time">Time:</label></td>
+  <th colspan="2">Graph <?php echo $graph_num; ?></th>
+ </tr>
+ <tr>
+  <td><label for="archive">Archive: </label></td>
+  <td><input type="text" id="archive" name="archive" value="" size="7"></td>
+ </tr>
+ <tr>
+  <td><label>Time: </label></td>
   <td>
-<select name="time_number">
- <option value="1">1</option> 
- <option value="2">2</option>
- <option value="3">3</option>
- <option value="4">4</option>
- <option value="5">5</option>
- <option value="6">6</option>
- <option value="7">7</option>
- <option value="8">8</option>
- <option value="9">9</option>
- <option value="10">10</option>
- <option value="11">11</option>
- <option value="12">12</option>
+<select name="timenumber">
+<?php
+	for($time_num = 1; $time_num < 13; $time_num++) {
+		echo ' <option ' . "\n";
+		// TODO add selected if selected
+		printf(" value=\"%s\">%s</option>\n", $time_num, $time_num);
+	}
+?>
+</select>
+<select name="timeunit">
+<?php
+	foreach($time_units as $time_unit) {
+		echo ' <option ' . "\n";
+		// TODO add selected if selected
+		printf(" value=\"%s\">%s</option>\n", $time_unit, $time_unit);
+	}
+?>
 </select>
   </td>
+ </tr>
+ <tr>
+  <td><label for="data">Data: <label></td>
   <td>
-<select name="time_label">
- <option value="hour">hours</option>
- <option value="day">days</option>
- <option value="week">weeks</option>
- <option value="month">months</option>
- <option value="year">years</option>
+<select name="data">
+ <option value=""></option>
+<?php
+	foreach($available_graphs as $type => $data) {
+		echo ' <option ' . "\n";
+		// TODO add selected if selected
+		printf(" value=\"%s\">%s</option>\n", $type, $type);
+	}
+?>
 </select>
+  </td>
+ </tr>
+</table>
+</form>
+
+<!-- End column <?php echo $graph_num; ?> -->
+  </td>
+<?php
+}
+?>
+ </tr>
+ <tr>
+  <td colspan="4" align=center>
+<form id="submit_graph" onSubmit="submitGraph(); return false;">
+ <input type="submit" name="graph" value="Graph">
+</form>
   </td>
  </tr>
 </table>
 
-<table>
- <tr>
-  <td><label for="archive">Archive:</label></td>
-  <td><input type="text" name="archive" value="<?php echo $_GET['archive']; ?>" size="7"></td>
- </tr>
-</table>

@@ -40,24 +40,24 @@ if(empty($plugins)) {
 	exit(0);
 }
 
-if(!array_key_exists('plugin', $req)) {
+if(!array_key_exists('data', $req)) {
 	$yarf->sendHeaders();
-	$yarf->showOutput('400', 'Missing plugin');
+	$yarf->showOutput('400', 'Missing data');
 	exit(0);
 }
 
-if(!array_key_exists($req['plugin'], $plugins)) {
+if(!array_key_exists($req['data'], $plugins)) {
 	$yarf->sendHeaders();
 	$yarf->showOutput('400', 'No such plugin');
 	exit(0);
 }
 
-$plugin = $plugins[$req['plugin']];
+$plugin = $plugins[$req['data']];
 
 require_once('yarf/v1/classes/collectd.php');
 require_once('yarf/v1/classes/collectd-' . $plugin['file'] . '.php');
 
-unset($req['plugin']);
+unset($req['data']);
 
 $class = 'CollectdGraph' . $plugin['class'];
 $api = new $class();
@@ -103,6 +103,7 @@ $nodes = array();
 
 if(array_key_exists('expression', $input)) {
 	// $nodegroups->getNodesFromExpression()
+	$nodes = array_merge($nodes, explode(',', $input['expression']));
 }
 
 if(array_key_exists('node', $input)) {
@@ -129,7 +130,7 @@ foreach($nodes as $node) {
 
 if(empty($exists)) {
 	$api->sendHeaders();
-	$api->showOutput('400', 'No nodes for this plugin');
+	$api->showOutput('400', 'No nodes for this data set');
 	exit(0);
 }
 

@@ -29,8 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-$default_format = 'print_r';
-
-require_once('yarf/v1/includes/config.php');
+$available_graphs = array(
+	'tcpconns' => array(
+		'type' => 'collectd',
+	),
+);
 
 ?>

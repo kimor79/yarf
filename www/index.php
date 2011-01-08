@@ -85,7 +85,6 @@ label {
  <div id="layouttop"><?php include('yarf/v1/includes/graph_form.php'); ?></div>
  <div id="layoutleft"><?php include('yarf/v1/includes/node_form.php'); ?></div>
  <div id="layoutcenter"><?php include('yarf/v1/includes/graph_view.php'); ?></div>
- <div id="layoutright"><?php include('yarf/v1/includes/node_list.php'); ?></div>
 </body>
 
 <script type="text/javascript">
@@ -109,14 +108,6 @@ Event.onDOMReady(function() {
 				width: 250
 			},
 			{
-				body: 'layoutright',
-				collapse: false,
-				gutter: '0px 5px 5px 0px',
-				position: 'right',
-				resize: true,
-				width: 200
-			},
-			{
 				body: 'layouttop',
 				collapse: false,
 				gutter: '5px 5px 5px 5px',
@@ -129,5 +120,35 @@ Event.onDOMReady(function() {
 
 	layout.render();
 });
+
+function submitGraph() {
+	var params = new Array();
+
+	var expr = document.getElementById('expression').value;
+	if(expr != '') {
+		params[0] = 'expression=' + encodeURIComponent(expr);
+	} else {
+		params[0] = '';
+	}
+
+	for(var graph = 1; graph < 5; graph++) {
+		var oForm = document.getElementById('graph' + graph);
+		var elem = oForm.elements;
+
+		if(oForm.elements['data'].value != '') {
+			var param = new Array();
+		
+			for(var i = 0; i < elem.length; i++) {
+				if(elem[i].value != '') {
+					param[i] = elem[i].name + '=' + elem[i].value;
+				}
+			}
+
+			params[graph] = 'graph[]=' + encodeURIComponent(param.join('&'));
+		}
+	}
+
+	window.location = '?' + params.join('&');
+};
 </script>
 </html>

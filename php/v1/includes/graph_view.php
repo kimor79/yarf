@@ -32,5 +32,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $default_format = 'print_r';
 
 require_once('yarf/v1/includes/config.php');
-
 ?>
+
+<?php
+if(empty($_GET)) {
+	echo 'Please select up to 4 graphs from the form above';
+} else {
+	echo '<pre>';
+	print_r($_GET);
+	echo '</pre>';
+
+	foreach($req['graph'] as $query) {
+		parse_str($query, $graph);
+
+		if(!array_key_exists($graph['data'], $available_graphs)) {
+			continue;
+		}
+
+		$c_graph = $available_graphs[$graph['data']];
+
+		echo '<img src=img/v1/' . $c_graph['type'] . '.php?expression=' . urlencode($req['expression']) . '&' . $query . '>';
+	}
+}
+?>
+

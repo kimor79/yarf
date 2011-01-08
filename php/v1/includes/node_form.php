@@ -44,6 +44,7 @@ if(get_config('nodes', 'use_nodegroups')) {
 
 ?>
 
+<form id="node_submit" onSubmit="return false;">
 <div>
 <label for="expression"><?php echo $nf_label; ?>:</label>
 </div>
@@ -77,3 +78,4 @@ if(!empty($nf_nodes)) {
 <?php
 }
 ?>
+</form>

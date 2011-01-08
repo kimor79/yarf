@@ -34,6 +34,14 @@ require_once('yarf/v1/classes/yarf.php');
 $yarf = new Yarf();
 $req = array_merge($_GET, $_POST);
 
+$time_units = array(
+	'hours',
+	'days',
+	'weeks',
+	'months',
+	'years',
+);
+
 if(!isset($default_format)) {
 	$default_format = 'png';
 }
