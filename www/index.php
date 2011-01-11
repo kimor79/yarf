@@ -63,20 +63,13 @@ label {
 }
 </style>
 <link rel="stylesheet" type="text/css"href="<?php echo $yui; ?>/reset-fonts-grids/reset-fonts-grids.css">
-<!-- Skin CSS files resize.css must load before layout.css -->
-<link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/assets/skins/sam/resize.css">
-<link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/assets/skins/sam/layout.css">
-<!-- Utility Dependencies -->
-<script type="text/javascript" src="<?php echo $yui; ?>/yahoo-dom-event/yahoo-dom-event.js"></script> 
-<script type="text/javascript" src="<?php echo $yui; ?>/dragdrop/dragdrop-min.js"></script> 
-<script type="text/javascript" src="<?php echo $yui; ?>/element/element-min.js"></script> 
-<!-- Optional Animation Support-->
-<?php /*
-<script type="text/javascript" src="<?php echo $yui; ?>/animation/animation-min.js"></script> 
-*/ ?>
-<!-- Optional Resize Support -->
+<link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/assets/skins/sam/skin.css">
+<script type="text/javascript" src="<?php echo $yui; ?>/utilities/utilities.js"></script> 
+<script type="text/javascript" src="<?php echo $yui; ?>/container/container-min.js"></script> 
+<script type="text/javascript" src="<?php echo $yui; ?>/event-mouseenter/event-mouseenter-min.js"></script> 
+<script type="text/javascript" src="<?php echo $yui; ?>/selector/selector-min.js"></script> 
+<script type="text/javascript" src="<?php echo $yui; ?>/event-delegate/event-delegate-min.js"></script> 
 <script type="text/javascript" src="<?php echo $yui; ?>/resize/resize-min.js"></script>
-<!-- Source file for the Layout Manager -->
 <script type="text/javascript" src="<?php echo $yui; ?>/layout/layout-min.js"></script>
 
  <head>
@@ -85,6 +78,7 @@ label {
  <div id="layouttop"><?php include('yarf/v1/includes/graph_form.php'); ?></div>
  <div id="layoutleft"><?php include('yarf/v1/includes/node_form.php'); ?></div>
  <div id="layoutcenter"><?php include('yarf/v1/includes/graph_view.php'); ?></div>
+ <div id="loading"></div>
 </body>
 
 <script type="text/javascript">
@@ -119,9 +113,25 @@ Event.onDOMReady(function() {
 	});
 
 	layout.render();
+
+	loading = new YAHOO.widget.Panel('loading', {
+		close: false,
+		draggable: false,
+		fixedcenter: true,
+		modal: true,
+		visible: false,
+		width: "240px",
+		zindex:4
+	});
+
+	loading.setHeader('Loading, please wait...');
+	loading.setBody('<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif"/>');
+	loading.render(document.body);
+
 });
 
 function submitGraph() {
+	loading.show();
 	var params = new Array();
 
 	var expr = document.getElementById('expression').value;
