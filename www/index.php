@@ -149,7 +149,7 @@ function submitGraph() {
 			var param = new Array();
 
 			var p = 0;
-			for(var i = 1; i < elem.length; i++) {
+			for(var i = 0; i < elem.length; i++) {
 				if(elem[i].value != '') {
 					param[p] = elem[i].name + '=' + elem[i].value;
 					p++;
