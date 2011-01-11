@@ -79,3 +79,5 @@ if(!empty($nf_nodes)) {
 }
 ?>
 </form>
+
+<span id="left_toggle">toggle</span>

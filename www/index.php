@@ -128,6 +128,13 @@ Event.onDOMReady(function() {
 	loading.setBody('<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif"/>');
 	loading.render(document.body);
 
+	Event.on('top_toggle', 'click', function(ev) {
+		layout.getUnitByPosition('top').toggle();
+	});
+
+	Event.on('left_toggle', 'click', function(ev) {
+		layout.getUnitByPosition('left').toggle();
+	});
 });
 
 function submitGraph() {

@@ -141,3 +141,5 @@ if(array_key_exists($graph_num, $desired_graphs)) {
   </td>
  </tr>
 </table>
+
+<span id="top_toggle">toggle</span>
