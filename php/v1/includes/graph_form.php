@@ -34,6 +34,15 @@ $default_format = 'print_r';
 require_once('yarf/v1/includes/config.php');
 require_once('yarf/v1/includes/available_graphs.php');
 
+$desired_graphs = array(
+	0 => false, // So the key numbers align with graph labels
+);
+if(array_key_exists('graph', $req)) {
+	foreach($req['graph'] as $graph_string) {
+		parse_str($graph_string, $desired_graphs[]);
+	}
+}
+
 ?>
 
 <table width="99%">
@@ -51,26 +60,44 @@ for($graph_num = 1; $graph_num < 5; $graph_num++) {
  </tr>
  <tr>
   <td><label for="archive">Archive: </label></td>
-  <td><input type="text" id="archive" name="archive" value="" size="7"></td>
+  <td><input type="text" id="archive" name="archive" value="<?php
+if(array_key_exists($graph_num, $desired_graphs)) {
+	if(array_key_exists('archive', $desired_graphs[$graph_num])) {
+		echo $desired_graphs[$graph_num]['archive'];
+	}
+}
+?>" size="7"></td>
  </tr>
  <tr>
   <td><label>Time: </label></td>
   <td>
-<select name="timenumber">
+<select name="t_val">
 <?php
 	for($time_num = 1; $time_num < 13; $time_num++) {
 		echo ' <option ' . "\n";
-		// TODO add selected if selected
-		printf(" value=\"%s\">%s</option>\n", $time_num, $time_num);
+		if(array_key_exists($graph_num, $desired_graphs)) {
+			if(array_key_exists('t_val', $desired_graphs[$graph_num])) {
+				if($desired_graphs[$graph_num]['t_val'] == $time_num) {
+					echo 'selected ';
+				}
+			}
+		}
+		printf("value=\"%s\">%s</option>\n", $time_num, $time_num);
 	}
 ?>
 </select>
-<select name="timeunit">
+<select name="t_unit">
 <?php
 	foreach($time_units as $time_unit) {
 		echo ' <option ' . "\n";
-		// TODO add selected if selected
-		printf(" value=\"%s\">%s</option>\n", $time_unit, $time_unit);
+		if(array_key_exists($graph_num, $desired_graphs)) {
+			if(array_key_exists('t_unit', $desired_graphs[$graph_num])) {
+				if($desired_graphs[$graph_num]['t_unit'] == $time_unit) {
+					echo 'selected ';
+				}
+			}
+		}
+		printf("value=\"%s\">%s</option>\n", $time_unit, $time_unit);
 	}
 ?>
 </select>
@@ -84,8 +111,14 @@ for($graph_num = 1; $graph_num < 5; $graph_num++) {
 <?php
 	foreach($available_graphs as $type => $data) {
 		echo ' <option ' . "\n";
-		// TODO add selected if selected
-		printf(" value=\"%s\">%s</option>\n", $type, $type);
+		if(array_key_exists($graph_num, $desired_graphs)) {
+			if(array_key_exists('data', $desired_graphs[$graph_num])) {
+				if($desired_graphs[$graph_num]['data'] == $type) {
+					echo 'selected ';
+				}
+			}
+		}
+		printf("value=\"%s\">%s</option>\n", $type, $type);
 	}
 ?>
 </select>
@@ -108,4 +141,3 @@ for($graph_num = 1; $graph_num < 5; $graph_num++) {
   </td>
  </tr>
 </table>
-

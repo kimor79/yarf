@@ -137,10 +137,12 @@ function submitGraph() {
 
 		if(oForm.elements['data'].value != '') {
 			var param = new Array();
-		
-			for(var i = 0; i < elem.length; i++) {
+
+			var p = 0;
+			for(var i = 1; i < elem.length; i++) {
 				if(elem[i].value != '') {
-					param[i] = elem[i].name + '=' + elem[i].value;
+					param[p] = elem[i].name + '=' + elem[i].value;
+					p++;
 				}
 			}
 
