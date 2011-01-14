@@ -126,7 +126,7 @@ Event.onDOMReady(function() {
 	});
 
 	loading.setHeader('Loading, please wait...');
-	loading.setBody('<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif"/>');
+	loading.setBody('<img src="<?php echo get_config('yui', 'loading_img'); ?>"/>');
 	loading.render(document.body);
 
 	Event.on('top_toggle', 'click', function(ev) {
