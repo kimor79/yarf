@@ -59,11 +59,8 @@ class Yarf extends ApiProducerDetails {
 
 		$this->contentType('png', 'image/png');
 
+		$this->paths = explode(PATH_SEPARATOR, get_config('rrd_paths'));
 		$this->trim_domain = get_config('trim_domain');
-
-		foreach(get_config('paths') as $type => $paths) {
-			$this->paths[$type] = explode(PATH_SEPARATOR, $paths);
-		}
 	}
 
 	/**

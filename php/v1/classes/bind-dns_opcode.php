@@ -60,13 +60,13 @@ class YarfGraphBindDnsOpcode extends Yarf {
 	 */
 	public function rrdFiles($node = '', $options = array()) {
 		$files = array();
-		$paths = $this->paths['collectd'];
+		$paths = $this->paths;
 
 		if(array_key_exists('archive', $options)) {
 			$archive = $this->findArchive($options['archive']);
 
 			if($archive) {
-				$paths = array($archive . '/collectd');
+				$paths = array($archive);
 		}
 
 		$ip_version = '*';
