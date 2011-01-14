@@ -120,8 +120,13 @@ foreach($nodes as $node) {
 }
 
 if(empty($exists)) {
+	$message = 'No nodes for this data set';
+	if(count($nodes) == 1) {
+		$message = 'No graph for ' . $nodes[0];
+	}
+
 	$api->sendHeaders();
-	$api->showOutput('400', 'No nodes for this data set');
+	$api->showOutput('400', $message);
 	exit(0);
 }
 
