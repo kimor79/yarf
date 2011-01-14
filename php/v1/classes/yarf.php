@@ -114,6 +114,22 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
+	 * Verify if rrd files exist for node
+	 * @param string $node
+	 * @param array $options
+	 * @return bool
+	 */
+	public function rrdExists($node = '', $options = array()) {
+		$glob = $this->rrdFiles($node, $options);
+
+		if(!empty($glob)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Generate standard rrd options
 	 * @param array $nodes
 	 * @param array $options

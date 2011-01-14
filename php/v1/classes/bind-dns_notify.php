@@ -52,22 +52,6 @@ class YarfBindDnsNotify extends Yarf {
 	}
 
 	/**
-	 * Verify if rrd files exist for node
-	 * @param string $node
-	 * @param array $options
-	 * @return bool
-	 */
-	public function rrdExists($node = '', $options = array()) {
-		$glob = $this->rrdFiles($node, $options);
-
-		if(!empty($glob)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Get the rrd files
 	 * @param string $node
 	 * @param array $options
