@@ -29,11 +29,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-$data_types = array(
+$data_types = array();
+
+$builtin_data_types = array(
 	'tcpconns' => array(
 		'class' => 'YarfTcpConns',
 		'file' => 'tcpconns',
 	),
 );
+
+if(is_file('/usr/local/etc/yarf/data_types.php')) {
+	@include_once('/usr/local/etc/yarf/data_types.php');
+}
+
+$data_types = array_merge($builtin_data_types, $data_types);
 
 ?>
