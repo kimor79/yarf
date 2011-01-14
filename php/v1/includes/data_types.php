@@ -29,15 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-class Collectd extends Yarf {
-
-	protected $paths = array();
-
-	public function __construct() {
-		parent::__construct();
-
-		$this->paths = explode(PATH_SEPARATOR, get_config('collectd', 'paths'));
-	}
-}
+$data_types = array(
+	'tcpconns' => array(
+		'class' => 'YarfTcpConns',
+		'file' => 'tcpconns',
+	),
+);
 
 ?>

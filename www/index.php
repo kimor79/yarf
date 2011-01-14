@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $default_format = 'print_r';
 
-require_once('yarf/v1/includes/config.php');
+require_once('yarf/v1/includes/init.php');
 
 $yui = rtrim(get_config('yui', 'base_uri'), '/');
 

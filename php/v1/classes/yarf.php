@@ -42,6 +42,8 @@ class Yarf extends ApiProducerDetails {
 		'node' => '_multi_',
 	);
 
+	protected $paths = array();
+
 	public $required = array();
 
 	public $sanitize = array(
@@ -57,8 +59,10 @@ class Yarf extends ApiProducerDetails {
 
 		$this->contentType('png', 'image/png');
 
-		if(function_exists('get_config')) {
-			$this->trim_domain = get_config('trim_domain');
+		$this->trim_domain = get_config('trim_domain');
+
+		foreach(get_config('paths') as $type => $paths) {
+			$this->paths[$type] = explode(PATH_SEPARATOR, $paths);
 		}
 	}
 

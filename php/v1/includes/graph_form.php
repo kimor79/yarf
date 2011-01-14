@@ -29,11 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-$default_format = 'print_r';
-
-require_once('yarf/v1/includes/config.php');
-require_once('yarf/v1/includes/available_graphs.php');
-
 $desired_graphs = array(
 	0 => false, // So the key numbers align with graph labels
 );
@@ -109,7 +104,7 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 <select name="data">
  <option value=""></option>
 <?php
-	foreach($available_graphs as $type => $data) {
+	foreach($data_types as $type => $data) {
 		echo ' <option ' . "\n";
 		if(array_key_exists($graph_num, $desired_graphs)) {
 			if(array_key_exists('data', $desired_graphs[$graph_num])) {

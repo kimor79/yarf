@@ -29,9 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-$default_format = 'print_r';
-
-require_once('yarf/v1/includes/config.php');
 ?>
 
 <?php
@@ -45,13 +42,11 @@ if(empty($_GET)) {
 	foreach($req['graph'] as $query) {
 		parse_str($query, $graph);
 
-		if(!array_key_exists($graph['data'], $available_graphs)) {
+		if(!array_key_exists($graph['data'], $data_types)) {
 			continue;
 		}
 
-		$c_graph = $available_graphs[$graph['data']];
-
-		echo '<img src=img/v1/' . $c_graph['type'] . '.php?expression=' . urlencode($req['expression']) . '&' . $query . '>';
+		echo '<img src=img/v1/graph.php?expression=' . urlencode($req['expression']) . '&' . $query . '>';
 	}
 }
 ?>

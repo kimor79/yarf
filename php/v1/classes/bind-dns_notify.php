@@ -29,36 +29,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-class CollectdGraphTcpConns extends Collectd {
+class YarfBindDnsNotify extends Yarf {
 
 	private $directions = array(
-		'local' => '#3020ee',
-		'remote' => '#00ff00',
+		'rx' => '#3020ee',
+		'tx' => '#00ff00',
 	);
 
-	private $states = array(
-		'CLOSE_WAIT',
-		'CLOSING',
-		'ESTABLISHED',
-		'FIN_WAIT1',
-		'FIN_WAIT2',
-		'LAST_ACK',
-		'LISTEN',
-		'SYN_RECV',
-		'SYN_SENT',
-		'TIME_WAIT',
+	private $ip_versions = array(
+		'IPv4',
+		'IPv6',
 	);
 
 	public function __construct() {
 		parent::__construct();
 
 		$this->optional['direction'] = '_multi_direction';
-		$this->optional['port'] = '_multi_digit';
-		$this->optional['state'] = '_multi_state';
+		$this->optional['ip_version'] = '_multi_ip_version';
 
 		$this->sanitize['direction'] = '_multi_';
-		$this->sanitize['port'] = '_multi_';
-		$this->sanitize['state'] = '_multi_';
+		$this->sanitize['ip_version'] = '_multi_ip_version';
 	}
 
 	/**
@@ -85,7 +75,7 @@ class CollectdGraphTcpConns extends Collectd {
 	 */
 	public function rrdFiles($node = '', $options = array()) {
 		$files = array();
-		$paths = $this->paths;
+		$paths = $this->paths['collectd'];
 
 		if(array_key_exists('archive', $options)) {
 			$archive = $this->findArchive($options['archive']);
@@ -95,21 +85,12 @@ class CollectdGraphTcpConns extends Collectd {
 			}
 		}
 
-		$port = '*';
-		if(array_key_exists('port', $options)) {
-			if(count($options['port']) > 1) {
-				$port = '{' . implode(',', $options['port']) . '}';
+		$ip_version = '*';
+		if(array_key_exists('ip_version', $options)) {
+			if(count($options['ip_version']) > 1) {
+				$ip_version = '{' . implode(',', $options['ip_version']) . '}';
 			} else {
-				$port = $options['port'][0];
-			}
-		}
-
-		$state = '*';
-		if(array_key_exists('state', $options)) {
-			if(count($options['state']) > 1) {
-				$state = '{' . implode(',', $options['state']) . '}';
-			} else {
-				$state = $options['state'][0];
+				$ip_version = $options['ip_version'][0];
 			}
 		}
 
@@ -121,8 +102,8 @@ class CollectdGraphTcpConns extends Collectd {
 		foreach($vectors as $vector) {
 			foreach($paths as $path) {
 				$g_path = $path . '/' . $node;
-				$g_path .= '/tcpconns-' . $port . '-' . $vector;
-				$g_path .= '/tcp_connections-' . $state . '.rrd';
+				$g_path .= '/bind-global-zone_maint_stats/dns_notify-';
+				$g_path .= $vector . '-' . $ip_version . '.rrd';
 
 				$glob = glob($g_path, GLOB_BRACE);
 				if(!empty($glob)) {
@@ -143,21 +124,23 @@ class CollectdGraphTcpConns extends Collectd {
 	 */
 	public function rrdOptions($nodes = array(), $options = array()) {
 		$label = '';
-		if(array_key_exists('state', $options)) {
-			if(count($options['state']) == 1) {
-				$label = '/' . $options['state'][0];
+		if(array_key_exists('ip_version', $options)) {
+			if(count($options['ip_version']) == 1) {
+				$label = '/' . $options['ip_version'][0];
 			}
 		}
 
 		if(array_key_exists('port', $options)) {
-			$label .= ' - ' . implode(',', $options['port']);
+			if(is_array($options['port'])) {
+				$label .= ' - ' . implode(',', $options['port']);
+			} else {
+				$label .= ' - ' . $options['port'];
+			}
 		}
 
-		$rrd = $this->rrdHeader($nodes, $options, 'tcpconns' . $label);
+		$rrd = $this->rrdHeader($nodes, $options, 'DNS Notify' . $label);
 		$rrd[] = '-l';
 		$rrd[] = 0;
-		$rrd[] = '-v';
-		$rrd[] = 'Connections';
 
 		$combine = array();
 		$count = 0;
@@ -221,18 +204,12 @@ class CollectdGraphTcpConns extends Collectd {
 		$rrd = array_merge($rrd, $this->rrdDate($options));
 
 		foreach($has_vector as $vector) {
-			$tag = $vector;
-			if(strlen($tag) < 6) {
-				$tag .= ' ';
-			}
-			$tag .= '	';
-
 			$rrd[] = 'VDEF:last' . $vector . '=' . $vector . ',LAST';
-			$rrd[] = 'LINE1:' . $vector . $this->directions[$vector] . ':' . $tag;
-			$rrd[] = 'GPRINT:min' . $vector . ':MIN:Min\: %4.0lf%S	\g';
-			$rrd[] = 'GPRINT:' . $vector . ':AVERAGE:Avg\: %4.0lf%S	\g';
-			$rrd[] = 'GPRINT:max' . $vector . ':MAX:Max\: %4.0lf%S	\g';
-			$rrd[] = 'GPRINT:last' . $vector . ':Last\: %4.0lf%S\j';
+			$rrd[] = 'LINE1:' . $vector . $this->directions[$vector] . ':' . strtoupper($vector);
+			$rrd[] = 'GPRINT:min' . $vector . ':MIN:Min\: %5.2lf%s';
+			$rrd[] = 'GPRINT:' . $vector . ':AVERAGE:Avg\: %5.2lf%s';
+			$rrd[] = 'GPRINT:max' . $vector . ':MAX:Max\: %5.2lf%s';
+			$rrd[] = 'GPRINT:last' . $vector . ':Last\: %5.2lf\j';
 		}
 
 		return $rrd;
@@ -248,12 +225,19 @@ class CollectdGraphTcpConns extends Collectd {
 	}
 
 	/**
-	 * Sanitize state
+	 * Sanitize ip_version
 	 * @param string $input
 	 * @return string
 	 */
-	protected function sanitizeInput_state($input) {
-		return strtoupper($input);
+	protected function sanitizeInput_ip_version($input) {
+		switch(substr($input, -1)) {
+			case '4':
+				return 'IPv4';
+			case '6':
+				return 'IPv6';
+		}
+
+		return $input;
 	}
 
 	/**
@@ -269,11 +253,11 @@ class CollectdGraphTcpConns extends Collectd {
 	}
 
 	/**
-	 * Validate state
+	 * Validate ip_version
 	 * @param string $input
 	 */
-	protected function validateInput_state($input) {
-		if(in_array(strtoupper($input), $this->states)) {
+	protected function validateInput_ip_version($input) {
+		if(preg_match('/^(?:IP)?v?[46]$/i', $input) == 1) {
 			return true;
 		}
 

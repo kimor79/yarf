@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-class CollectdGraphBindDnsOpcode extends Collectd {
+class YarfGraphBindDnsOpcode extends Yarf {
 
 	private $transfer_types = array(
 		'AXFR' => '#3020ee',
@@ -76,7 +76,7 @@ class CollectdGraphBindDnsOpcode extends Collectd {
 	 */
 	public function rrdFiles($node = '', $options = array()) {
 		$files = array();
-		$paths = $this->paths;
+		$paths = $this->paths['collectd'];
 
 		if(array_key_exists('archive', $options)) {
 			$archive = $this->findArchive($options['archive']);

@@ -31,14 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $default_format = 'png';
 
-require_once('yarf/v1/includes/config.php');
-require_once('yarf/v1/includes/collectd.php');
-
-if(empty($plugins)) {
-	$yarf->sendHeaders();
-	$yarf->showOutput('500', 'No plugins configured');
-	exit(0);
-}
+require_once('yarf/v1/includes/init.php');
 
 if(!array_key_exists('data', $req)) {
 	$yarf->sendHeaders();
@@ -46,20 +39,19 @@ if(!array_key_exists('data', $req)) {
 	exit(0);
 }
 
-if(!array_key_exists($req['data'], $plugins)) {
+if(!array_key_exists($req['data'], $data_types)) {
 	$yarf->sendHeaders();
-	$yarf->showOutput('400', 'No such plugin');
+	$yarf->showOutput('400', 'No such data type');
 	exit(0);
 }
 
-$plugin = $plugins[$req['data']];
+$data_type = $data_types[$req['data']];
 
-require_once('yarf/v1/classes/collectd.php');
-require_once('yarf/v1/classes/collectd-' . $plugin['file'] . '.php');
+require_once('yarf/v1/classes/' . $data_type['file'] . '.php');
 
 unset($req['data']);
 
-$class = 'CollectdGraph' . $plugin['class'];
+$class = $data_type['class'];
 $api = new $class();
 
 $api->setParameters($req, array('outputFormat' => $default_format));

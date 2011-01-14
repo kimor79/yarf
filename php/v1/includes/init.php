@@ -29,10 +29,71 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
-$available_graphs = array(
-	'tcpconns' => array(
-		'type' => 'collectd',
-	),
+$config = @parse_ini_file('/usr/local/etc/yarf/config.ini', true);
+
+if(empty($config)) {
+	echo 'There is an error with the config file';
+	exit(0);
+}
+
+function get_config($key = '', $sub = '') {
+	global $config;
+
+	$defaults = array(
+		'archive' => array(
+			'paths' => '/yarf/archive',
+		),
+
+		'paths' => array(
+			'collectd' => '/var/db/collectd',
+		),
+
+		'yui' => array(
+			'base_uri' => 'http://yui.yahooapis.com/2.8.2r1/build',
+		),
+	);
+
+	if(array_key_exists($key, $config)) {
+		if(empty($sub)) {
+			return $config[$key];
+		} else {
+			if(array_key_exists($sub, $config[$key])) {
+				return $config[$key][$sub];
+			}
+		}
+	}
+
+	if(array_key_exists($key, $defaults)) {
+		if(empty($sub)) {
+			return $defaults[$key];
+		} else {
+			if(array_key_exists($sub, $defaults[$key])) {
+				return $defaults[$key][$sub];
+			}
+		}
+	}
+
+	return NULL;
+}
+
+require_once('yarf/v1/classes/yarf.php');
+require_once('yarf/v1/includes/data_types.php');
+
+$yarf = new Yarf();
+$req = array_merge($_GET, $_POST);
+
+$time_units = array(
+	'hours',
+	'days',
+	'weeks',
+	'months',
+	'years',
 );
+
+if(!isset($default_format)) {
+	$default_format = 'png';
+}
+
+$yarf->setParameters($req, array('outputFormat' => $default_format));
 
 ?>
