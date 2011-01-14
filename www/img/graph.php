@@ -94,8 +94,7 @@ $input = $api->sanitizeInput($input, $api->sanitize);
 $nodes = array();
 
 if(array_key_exists('expression', $input)) {
-	// $nodegroups->getNodesFromExpression()
-	$nodes = array_merge($nodes, explode(',', $input['expression']));
+	$nodes = $api->parseNodes($input['expression']);
 }
 
 if(array_key_exists('node', $input)) {

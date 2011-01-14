@@ -86,6 +86,33 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
+	 * Parse 'expression' based on nodegroups config
+	 * @param string $expression
+	 * @param array
+	 */
+	public function parseNodes($expression) {
+		$nodes = array();
+
+		if(get_config('nodes', 'use_nodegroups')) {
+			// nodegroups client
+
+			return $nodes;
+		}
+
+		if(get_config('nodes', 'file')) {
+			return $nodes;
+		}
+
+		if(get_config('nodes', 'list')) {
+			return $nodes;
+		}
+
+		$nodes = preg_split('/[^\w.-]+/', $expression);
+
+		return $nodes;
+	}
+
+	/**
 	 * Generate the date (which may be an archive date)
 	 * @param array $options
 	 * @return array

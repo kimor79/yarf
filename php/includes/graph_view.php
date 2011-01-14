@@ -51,8 +51,7 @@ foreach($req['graph'] as $query) {
 
 	$row_combined[$int] = $query;
 
-	// parse expression
-	$nodes = explode(',', $req['expression']);
+	$nodes = $yarf->parseNodes($req['expression']);
 
 	// file exists for $data_type
 	$row_included[$int] = array(
