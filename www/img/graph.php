@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $default_format = 'png';
 
-require_once('yarf/v1/includes/init.php');
+require_once('yarf/includes/init.php');
 
 if(!array_key_exists('data', $req)) {
 	$yarf->sendHeaders();
@@ -47,7 +47,7 @@ if(!array_key_exists($req['data'], $data_types)) {
 
 $data_type = $data_types[$req['data']];
 
-require_once('yarf/v1/classes/' . $data_type['file'] . '.php');
+require_once('yarf/classes/' . $data_type['file'] . '.php');
 
 unset($req['data']);
 

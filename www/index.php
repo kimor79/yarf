@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $default_format = 'print_r';
 
-require_once('yarf/v1/includes/init.php');
+require_once('yarf/includes/init.php');
 
 $yui = rtrim(get_config('yui', 'base_uri'), '/');
 
@@ -75,9 +75,9 @@ label {
  <head>
 
 <body class="yui-skin-sam">
- <div id="layouttop"><?php include('yarf/v1/includes/graph_form.php'); ?></div>
- <div id="layoutleft"><?php include('yarf/v1/includes/node_form.php'); ?></div>
- <div id="layoutcenter"><?php include('yarf/v1/includes/graph_view.php'); ?></div>
+ <div id="layouttop"><?php include('yarf/includes/graph_form.php'); ?></div>
+ <div id="layoutleft"><?php include('yarf/includes/node_form.php'); ?></div>
+ <div id="layoutcenter"><?php include('yarf/includes/graph_view.php'); ?></div>
  <div id="loading"></div>
 </body>
 
