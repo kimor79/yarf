@@ -91,7 +91,8 @@ Event.onDOMReady(function() {
 			{
 				body: 'layoutcenter',
 				gutter: '0px 5px 5px 5px',
-				position: 'center'
+				position: 'center',
+				scroll: true
 			},
 			{
 				body: 'layoutleft',
