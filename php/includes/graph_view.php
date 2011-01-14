@@ -32,22 +32,67 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ?>
 
 <?php
-if(empty($_GET)) {
+if(empty($req)) {
 	echo 'Please select up to 4 graphs from the form above';
-} else {
-	echo '<pre>';
-	print_r($_GET);
-	echo '</pre>';
-
-	foreach($req['graph'] as $query) {
-		parse_str($query, $graph);
-
-		if(!array_key_exists($graph['data'], $data_types)) {
-			continue;
-		}
-
-		echo '<img src=img/graph.php?expression=' . urlencode($req['expression']) . '&' . $query . '>';
-	}
+	return;
 }
+
+$row_combined = array();
+$row_included = array();
+$row_nodes = array();
+$int = 0;
+
+foreach($req['graph'] as $query) {
+	parse_str($query, $graph);
+
+	if(!array_key_exists($graph['data'], $data_types)) {
+		continue;
+	}
+
+	$row_combined[$int] = $query;
+
+	// parse expression
+	$nodes = explode(',', $req['expression']);
+
+	// file exists for $data_type
+	$row_included[$int] = array(
+		'included' => 1,
+		'excluded' => 5,
+	);
+
+	foreach($nodes as $node) {
+		$row_nodes[$node][$int] = $query;
+	}
+
+
+	$int++;
+}
+
 ?>
 
+<table>
+ <tr>
+<?php
+foreach($row_combined as $row) {
+	echo '  <td><img src="img/graph.php?expression=' . urlencode($req['expression']) . '&' . $row . '"></td>' . "\n";
+}
+?>
+ </tr>
+ <tr>
+<?php
+foreach($row_included as $row) {
+	echo '  <td>' . $row['included'] . ' included<br>';
+	echo $row['excluded'] . ' excluded</td>' . "\n";
+}
+?>
+ </tr>
+<?php
+foreach($row_nodes as $node => $n_query) {
+	echo ' <tr>' . "\n";
+	foreach($n_query as $query) {
+		echo '  <td><img src="img/graph.php?node=' . urlencode($node) . '&' . $query . '"></td>' . "\n";
+	}
+	echo ' </tr>';
+}
+?>
+</table>
