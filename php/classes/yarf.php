@@ -193,6 +193,25 @@ class Yarf extends ApiProducerDetails {
                 
 		$rrd[] = $label;
 
+		$time = '';
+
+		if(array_key_exists('t_val', $options)) {
+			$time = $options['t_val'];
+		}
+
+		if(array_key_exists('t_unit', $options)) {
+			if(empty($time)) {
+				$time = 1;
+			}
+
+			$time .= $options['t_unit'];
+		}
+
+		if(!empty($time)) {
+			$rrd[] = '--start';
+			$rrd[] = 'end-' . $time;
+		}
+
 		return $rrd;
 	}
 
