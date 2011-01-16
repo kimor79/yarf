@@ -40,6 +40,8 @@ class Yarf extends ApiProducerDetails {
 		'debug' => 'bool',
 		'expression' => NULL,
 		'node' => '_multi_',
+		't_unit' => 'timeunit',
+		't_val' => 'digit',
 	);
 
 	protected $paths = array();
@@ -219,6 +221,23 @@ class Yarf extends ApiProducerDetails {
 	protected function validateInput_archive($input) {
 		if(is_scalar($input)) {
 			if($this->findArchive($input)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Validate time unit
+	 * @param string $input
+	 * @return bool
+	 */
+	protected function validateInput_timeunit($input) {
+		global $time_units;
+
+		if(is_scalar($input)) {
+			if(in_array($input, $time_units)) {
 				return true;
 			}
 		}
