@@ -37,6 +37,8 @@ if(empty($req)) {
 	return;
 }
 
+print_r($req);
+
 $row_combined = array();
 $row_included = array();
 $row_nodes = array();
@@ -48,6 +50,8 @@ foreach($req['graph'] as $query) {
 	if(!array_key_exists($graph['data'], $data_types)) {
 		continue;
 	}
+
+print_r($graph);
 
 	$row_combined[$int] = $query;
 

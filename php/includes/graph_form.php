@@ -101,7 +101,7 @@ if(array_key_exists($graph_num, $desired_graphs)) {
  <tr>
   <td><label for="data">Data: <label></td>
   <td>
-<select name="data">
+<select name="data" onChange="showExtras(this, <?php echo $graph_num; ?>)">
  <option value=""></option>
 <?php
 	foreach($data_types as $type => $data) {
@@ -121,6 +121,19 @@ if(array_key_exists($graph_num, $desired_graphs)) {
  </tr>
 </table>
 </form>
+<?php
+	foreach($data_types as $type => $data) {
+		include_once('yarf/classes/' . $data['file'] . '.php');
+		if(method_exists($data['class'], 'showFormExtras')) {
+			$t_class = new $data['class'];
+			if(array_key_exists($graph_num, $desired_graphs)) {
+				$t_class->showFormExtras($type, $graph_num, $desired_graphs[$graph_num]);
+			} else {
+				$t_class->showFormExtras($type, $graph_num, array());
+			}
+		}
+	}
+?>
 
 <!-- End column <?php echo $graph_num; ?> -->
   </td>

@@ -54,6 +54,10 @@ body {
 	width: 98%;
 }
 
+.extra {
+	display: none;
+}
+
 label {
 	font-weight: bold;
 }
@@ -84,6 +88,9 @@ label {
 <script type="text/javascript">
 var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
+
+var formExtra;
+var previousExtra;
 
 Event.onDOMReady(function() {
 	var layout = new YAHOO.widget.Layout({
@@ -138,6 +145,21 @@ Event.onDOMReady(function() {
 	});
 });
 
+function showExtras(obj, num) {
+	var chosen = obj.options[obj.selectedIndex];
+
+	if(previousExtra) {
+		document.getElementById('graph' + num + '_' + previousExtra).style.display = 'none';
+	}
+
+	formExtra = chosen.value;
+	previousExtra = chosen.value;
+
+	if(chosen.value != '') {
+		document.getElementById('graph' + num + '_' + chosen.value).style.display = 'inline';
+	}
+}
+
 function submitGraph() {
 	loading.show();
 	var params = new Array();
@@ -151,13 +173,35 @@ function submitGraph() {
 
 	for(var graph = 1; graph < 5; graph++) {
 		var oForm = document.getElementById('graph' + graph);
-		var elem = oForm.elements;
+		var oElem = oForm.elements;
 
 		if(oForm.elements['data'].value != '') {
 			var param = new Array();
+			var elem;
+
+			if(formExtra) {
+alert(formExtra);
+				var eForm = document.getElementById('graph' + graph + '_' + formExtra);
+				elem = oElem.concat(eForm.elements);
+			} else {
+				elem = oElem;
+			}
 
 			var p = 0;
 			for(var i = 0; i < elem.length; i++) {
+				if(elem[i].type == 'select-multiple') {
+					for(var o = 0; o < elem[i].options.length; o++) {
+						if(elem[i].options[o].selected == true) {
+							param[p] = elem[i].name;
+							param[p] += '[]=';
+							param[p] += elem[i].options[o].value;
+							p++;
+						}
+					}
+
+					continue;
+				}
+
 				if(elem[i].value != '') {
 					param[p] = elem[i].name + '=' + elem[i].value;
 					p++;

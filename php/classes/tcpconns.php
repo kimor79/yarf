@@ -241,6 +241,46 @@ class YarfTcpConns extends Yarf {
 	}
 
 	/**
+	 * Show form options
+	 * @param string $type
+	 * @param int $graph_num
+	 * @param array $data
+	 */
+	public function showFormExtras($type, $num, $data) {
+		echo '<form class="extra" id="graph' . $num . '_' . $type . '">' . "\n";
+		echo '<table>' . "\n";
+		echo ' <tr>' . "\n";
+		echo '  <td><label for="port">Port</label></td>';
+		echo '<td><input type="text" name="port" value="';
+		if(array_key_exists('port', $data)) {
+			echo $data['port'];
+		}
+		echo '"></td>' . "\n";
+		echo ' </tr>' . "\n";
+
+		echo ' <tr id="extra" id="' . $data['data'] . '">' . "\n";
+		echo '  <td><label for="state">State</label></td>';
+		echo '<td><select name="state" multiple="multiple">' . "\n";
+
+		foreach($this->states as $state) {
+			echo ' <option ';
+
+			if(array_key_exists('state', $data)) {
+				if(in_array($state, $data['state'])) {
+					echo 'selected ';
+				}
+			}
+
+			printf("value=\"%s\">%s</option>\n", $state, $state);
+		}
+
+		echo '</select></td>' . "\n";
+		echo ' </tr>' . "\n";
+		echo '</table>' . "\n";
+		echo '</form>' . "\n";
+	}
+
+	/**
 	 * Validate direction
 	 * @param string $input
 	 */
