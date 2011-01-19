@@ -35,12 +35,12 @@ class YarfGeneric extends Yarf {
 		'data' => array(
 			'value' => array(
 				'color' => '#3020ee',
-				'legend' => 'Value',
+				'legend' => '',
 			),
 		),
 		'label' => 'Generic Graph',
 		'paths' => array(''),
-		'vertical_label' => 'Values/sec',
+		'vertical_label' => '',
 	);
 
 	public function __construct($options = array()) {
