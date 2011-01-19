@@ -44,9 +44,11 @@ class YarfGeneric extends Yarf {
 				'scale' => '',
 			),
 		),
+		'rrd' => array(
+			'-l' => 0,
+		),
 		'title' => 'Generic Graph',
 		'paths' => array(''),
-		'vertical_label' => '',
 	);
 
 	public function __construct($options = array()) {
@@ -107,12 +109,14 @@ class YarfGeneric extends Yarf {
 		}
 
 		$rrd = $this->rrdHeader($nodes, $options, $title);
-		$rrd[] = '-l';
-		$rrd[] = 0;
 
-		if(!empty($this->details['vertical_label'])) {
-			$rrd[] = '-v';
-			$rrd[] = $this->details['vertical_label'];
+		if(array_key_exists('rrd', $this->details)) {
+			foreach($this->details['rrd'] as $key => $value) {
+				if(!is_null) {
+					$rrd[] = $key;
+					$rrd[] = $value;
+				}
+			}
 		}
 
 		$combine = array();

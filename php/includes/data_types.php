@@ -56,12 +56,11 @@ $builtin_data_types = array(
 				),
 				'value' => NULL,
 			),
-			'title' => 'Load',
 			'paths' => array(
 				'load/load',
 				'snmp/load',
 			),
-			'vertical_label' => '',
+			'title' => 'Load',
 		),
 		'file' => 'generic',
 	),
@@ -82,11 +81,14 @@ $builtin_data_types = array(
 					'scale' => '9,*,5,/,32,+'
 				),
 			),
-			'title' => 'Temperature',
 			'paths' => array(
 				'snmp/temperature',
 			),
-			'vertical_label' => 'Fahrenheit',
+			'rrd' => array(
+				'-u' => 100,
+				'-v' => 'Fahrenheit',
+			),
+			'title' => 'Temperature',
 		),
 		'file' => 'generic',
 	),
@@ -102,11 +104,14 @@ $builtin_data_types = array(
 					'scale' => '86400,/',
 				),
 			),
-			'title' => 'Uptime',
 			'paths' => array(
 				'uptime/uptime',
 				'snmp/uptime',
 			),
+			'rrd' => array(
+				'-v' => 'Days',
+			),
+			'title' => 'Uptime',
 			'vertical_label' => 'Days',
 		),
 		'file' => 'generic',
