@@ -52,7 +52,12 @@ require_once('yarf/classes/' . $data_type['file'] . '.php');
 unset($req['data']);
 
 $class = $data_type['class'];
-$api = new $class();
+
+if(array_key_exists('class_options', $data_type)) {
+	$api = new $class($data_type['class_options']);
+} else {
+	$api = new $class();
+}
 
 $api->setParameters($req, array('outputFormat' => $default_format));
 $input = $api->setInput($req);
