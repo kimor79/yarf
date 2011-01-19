@@ -39,7 +39,7 @@ class YarfGeneric extends Yarf {
 			),
 		),
 		'label' => 'Generic Graph',
-		'path' => '',
+		'paths' => array(''),
 		'vertical_label' => 'Values/sec',
 	);
 
@@ -68,12 +68,14 @@ class YarfGeneric extends Yarf {
 		}
 
 		foreach($paths as $path) {
-			$full_path = $path . '/' . $node;
-			$full_path .= '/' . $this->details['path'] . '.rrd';
+			foreach($this->details['paths'] as $s_path) {
+				$full_path = sprintf("%s/%s/%s.rrd",
+					$path, $node, $s_path);
 
-			if(file_exists($full_path)) {
-				$files[] = $full_path;
-				continue;
+				if(file_exists($full_path)) {
+					$files[] = $full_path;
+					continue;
+				}
 			}
 		}
 

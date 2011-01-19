@@ -14,7 +14,9 @@ $data_types = array(
 				),
 			),
 			'label' => 'syslog-ng',
-			'path' => 'syslog-ng/derive-processed', /* .../$path.rrd */
+			'paths' => array(
+				'syslog-ng/derive-processed', /* .../$path.rrd */
+			),
 			'vertical_label' => 'messages/sec',
 		),
 		'file' => 'generic', /* yarf/classes/$file.php */
