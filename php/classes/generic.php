@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class YarfGeneric extends Yarf {
 
 	protected $details = array(
+		'combined' => array(
+			'average' => false,
+		),
 		'data' => array(
 			'value' => array(
 				'area' => true,
@@ -176,16 +179,31 @@ class YarfGeneric extends Yarf {
 		foreach($this->details['data'] as $o_ds => $data) {
 			$ds = $o_ds;
 
-			if($data['scale']) {
-				$ds .= 'scaled';
-				$rrd[] = sprintf("CDEF:%s=%s,%s",
-					$ds, $o_ds, $data['scale']);
-				$rrd[] = sprintf("CDEF:min%s=min%s,%s",
-					$ds, $o_ds, $data['scale']);
-				$rrd[] = sprintf("CDEF:max%s=max%s,%s",
-					$ds, $o_ds, $data['scale']);
+			if(array_key_exists('combined', $this->details)) {
+				if(array_key_exists('average', $this->details['combined'])) {
+					if($this->details['combined']['average']) {
+						$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
+							$ds, $ds, count($nodes));
+						$rrd[] = sprintf("CDEF:min%scombined=min%s,%s,/",
+							$ds, $ds, count($nodes));
+						$rrd[] = sprintf("CDEF:max%scombined=max%s,%s,/",
+							$ds, $ds, count($nodes));
+
+						$ds .= 'combined';
+					}
+				}
 			}
 
+			if($data['scale']) {
+				$rrd[] = sprintf("CDEF:%sscaled=%s,%s",
+					$ds, $ds, $data['scale']);
+				$rrd[] = sprintf("CDEF:min%sscaled=min%s,%s",
+					$ds, $ds, $data['scale']);
+				$rrd[] = sprintf("CDEF:max%sscaled=max%s,%s",
+					$ds, $ds, $data['scale']);
+
+				$ds .= 'scaled';
+			}
 
 			$rrd[] = sprintf("VDEF:last%s=%s,LAST",
 				$ds, $ds);

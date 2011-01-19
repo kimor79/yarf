@@ -35,6 +35,9 @@ $builtin_data_types = array(
 	'load' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
+			'combined' => array(
+				'average' => true,
+			),
 			'data' => array(
 				'shortterm' => array(
 					'color' => '#ff0000',
@@ -70,6 +73,9 @@ $builtin_data_types = array(
 	'uptime' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
+			'combined' => array(
+				'average' => true,
+			),
 			'data' => array(
 				'value' => array(
 					'scale' => '86400,/',
