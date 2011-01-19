@@ -112,9 +112,12 @@ class YarfGeneric extends Yarf {
 
 		if(array_key_exists('rrd', $this->details)) {
 			foreach($this->details['rrd'] as $key => $value) {
-				if(!is_null) {
+				if(!is_null($value)) {
 					$rrd[] = $key;
-					$rrd[] = $value;
+
+					if($value !== '') {
+						$rrd[] = $value;
+					}
 				}
 			}
 		}
