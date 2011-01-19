@@ -10,10 +10,10 @@ $data_types = array(
 		'class_options' => array( /* new $class($class_options) */
 			'data' => array(
 				'value' => array( /* rrd ds name */
-					'legend' => '',
+					'color' => '#ef45tg',
 				),
 			),
-			'label' => 'syslog-ng',
+			'title' => 'syslog-ng',
 			'paths' => array(
 				'syslog-ng/derive-processed', /* .../$path.rrd */
 			),

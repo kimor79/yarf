@@ -56,7 +56,7 @@ $builtin_data_types = array(
 				),
 				'value' => NULL,
 			),
-			'label' => 'Load',
+			'title' => 'Load',
 			'paths' => array(
 				'load/load',
 				'snmp/load',
@@ -82,7 +82,7 @@ $builtin_data_types = array(
 					'scale' => '9,*,5,/,32,+'
 				),
 			),
-			'label' => 'Temperature',
+			'title' => 'Temperature',
 			'paths' => array(
 				'snmp/temperature',
 			),
@@ -102,7 +102,7 @@ $builtin_data_types = array(
 					'scale' => '86400,/',
 				),
 			),
-			'label' => 'Uptime',
+			'title' => 'Uptime',
 			'paths' => array(
 				'uptime/uptime',
 				'snmp/uptime',

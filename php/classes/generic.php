@@ -44,7 +44,7 @@ class YarfGeneric extends Yarf {
 				'scale' => '',
 			),
 		),
-		'label' => 'Generic Graph',
+		'title' => 'Generic Graph',
 		'paths' => array(''),
 		'vertical_label' => '',
 	);
@@ -95,18 +95,18 @@ class YarfGeneric extends Yarf {
 	 * @return array
 	 */
 	public function rrdOptions($nodes = array(), $options = array()) {
-		$label = $this->details['label'];
+		$title = $this->details['title'];
 		if(count($nodes) > 1) {
 			if(array_key_exists('combined', $this->details)) {
 				if(array_key_exists('average', $this->details['combined'])) {
 					if($this->details['combined']['average']) {
-						$label .= ' (Avg)';
+						$title .= ' (Avg)';
 					}
 				}
 			}
 		}
 
-		$rrd = $this->rrdHeader($nodes, $options, $label);
+		$rrd = $this->rrdHeader($nodes, $options, $title);
 		$rrd[] = '-l';
 		$rrd[] = 0;
 
