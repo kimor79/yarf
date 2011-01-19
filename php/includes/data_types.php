@@ -32,9 +32,50 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $data_types = array();
 
 $builtin_data_types = array(
+	'load' => array(
+		'class' => 'YarfGeneric',
+		'class_options' => array(
+			'data' => array(
+				'shortterm' => array(
+					'color' => '#ff0000',
+					'legend' => '1minute',
+				),
+				'midterm' => array(
+					'color' => '#00ff00',
+					'legend' => '5minute',
+					'line' => 2,
+				),
+				'longterm' => array(
+					'area' => true,
+					'color' => '#3020ee',
+					'legend' => '15minute',
+					'line' => 0,
+				),
+				'value' => NULL,
+			),
+			'label' => 'Load',
+			'paths' => array(
+				'load/load',
+			),
+			'vertical_label' => '',
+		),
+		'file' => 'generic',
+	),
+
 	'tcpconns' => array(
 		'class' => 'YarfTcpConns',
 		'file' => 'tcpconns',
+	),
+
+	'uptime' => array(
+		'class' => 'YarfGeneric',
+		'class_options' => array(
+			'label' => 'Uptime',
+			'paths' => array(
+				'uptime/uptime',
+			),
+		),
+		'file' => 'generic',
 	),
 );
 
