@@ -95,7 +95,20 @@ class YarfGeneric extends Yarf {
 	 * @return array
 	 */
 	public function rrdOptions($nodes = array(), $options = array()) {
-		$rrd = $this->rrdHeader($nodes, $options, $this->details['label']);
+		$node_count = count($nodes);
+
+		$label = $this->details['label'];
+		if($node_count > 1) {
+			if(array_key_exists('combined', $this->details)) {
+				if(array_key_exists('average', $this->details['combined'])) {
+					if($this->details['combined']['average']) {
+						$label .= ' (Avg)';
+					}
+				}
+			}
+		}
+
+		$rrd = $this->rrdHeader($nodes, $options, $label);
 		$rrd[] = '-l';
 		$rrd[] = 0;
 
@@ -179,17 +192,19 @@ class YarfGeneric extends Yarf {
 		foreach($this->details['data'] as $o_ds => $data) {
 			$ds = $o_ds;
 
-			if(array_key_exists('combined', $this->details)) {
-				if(array_key_exists('average', $this->details['combined'])) {
-					if($this->details['combined']['average']) {
-						$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
-							$ds, $ds, count($nodes));
-						$rrd[] = sprintf("CDEF:min%scombined=min%s,%s,/",
-							$ds, $ds, count($nodes));
-						$rrd[] = sprintf("CDEF:max%scombined=max%s,%s,/",
-							$ds, $ds, count($nodes));
+			if($node_count > 1) {
+				if(array_key_exists('combined', $this->details)) {
+					if(array_key_exists('average', $this->details['combined'])) {
+						if($this->details['combined']['average']) {
+							$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
+								$ds, $ds, count($nodes));
+							$rrd[] = sprintf("CDEF:min%scombined=min%s,%s,/",
+								$ds, $ds, count($nodes));
+							$rrd[] = sprintf("CDEF:max%scombined=max%s,%s,/",
+								$ds, $ds, count($nodes));
 
-						$ds .= 'combined';
+							$ds .= 'combined';
+						}
 					}
 				}
 			}
