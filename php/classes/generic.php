@@ -34,8 +34,10 @@ class YarfGeneric extends Yarf {
 	protected $details = array(
 		'data' => array(
 			'value' => array(
+				'area' => true,
 				'color' => '#3020ee',
 				'legend' => '',
+				'line' => 1,
 			),
 		),
 		'label' => 'Generic Graph',
@@ -89,8 +91,6 @@ class YarfGeneric extends Yarf {
 	 * @return array
 	 */
 	public function rrdOptions($nodes = array(), $options = array()) {
-		$graph_type = 'AREA';
-
 		$rrd = $this->rrdHeader($nodes, $options, $this->details['label']);
 		$rrd[] = '-l';
 		$rrd[] = 0;
@@ -172,15 +172,25 @@ class YarfGeneric extends Yarf {
 		$rrd = array_merge($rrd, array_values($combine));
 		$rrd = array_merge($rrd, $this->rrdDate($options));
 
-		if(count($this->details['data']) > 1) {
-			$graph_type = 'LINE1';
-		}
-
 		foreach($this->details['data'] as $ds => $data) {
 			$rrd[] = sprintf("VDEF:last%s=%s,LAST",
 				$ds, $ds);
-			$rrd[] = sprintf("%s:%s%s:%s",
-				$graph_type, $ds, $data['color'], $data['legend']);
+
+			if($data['area']) {
+				$rrd[] = sprintf("AREA:%s%s",
+					$ds, $data['color']);
+			}
+
+			if(array_key_exists('line', $data)) {
+				if(ctype_digit((string) $data['line'])) {
+					$rrd[] = sprintf("LINE%s:%s%s:%s",
+						$data['line'], $ds, $data['color'], $data['legend']);
+				}
+			} else {
+				$rrd[] = sprintf("LINE1:%s%s:%s",
+					$ds, $data['color'], $data['legend']);
+			}
+
 			$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %%4.0lf%%S	\\g",
 				$ds);
 			$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %%4.0lf%%S	\\g",
