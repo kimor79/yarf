@@ -32,8 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class YarfGeneric extends Yarf {
 
 	protected $details = array(
-		'label' => 'Generic value',
-		'legend' => '',
+		'data' => array(
+			'value' => array(
+				'color' => '#3020ee',
+				'legend' => 'Value',
+			),
+		),
+		'label' => 'Generic Graph',
 		'path' => '',
 		'vertical_label' => 'Values/sec',
 	);
@@ -41,11 +46,7 @@ class YarfGeneric extends Yarf {
 	public function __construct($options = array()) {
 		parent::__construct();
 
-		foreach($this->details as $key => $value) {
-			if(array_key_exists($key, $options)) {
-				$this->details[$key] = $options[$key];
-			}
-		}
+		$this->details = $this->setDetails($this->details, $options);
 	}
 
 	/**
@@ -113,18 +114,29 @@ class YarfGeneric extends Yarf {
 			foreach($files as $o_file) {
 				$file = str_replace(array('/', '.'), '_', $o_file);
 
-				$rrd[] = 'DEF:' . $file . '=' . $o_file . ':value:AVERAGE';
-				$rrd[] = 'DEF:min' . $file . '=' . $o_file . ':value:MIN';
-				$rrd[] = 'DEF:max' . $file . '=' . $o_file . ':value:MAX';
+				foreach($this->details['data'] as $ds => $data) {
+					$rrd[] = sprintf("DEF:%s%s=%s:%s:AVERAGE",
+						$ds, $file, $o_file, $ds);
+					$rrd[] = sprintf("DEF:min%s%s=%s:%s:MIN",
+						$ds, $file, $o_file, $ds);
+					$rrd[] = sprintf("DEF:max%s%s=%s:%s:MAX",
+						$ds, $file, $o_file, $ds);
 
-				if($num == 0) {
-					$t_combine['avg'] = 'CDEF:' . $node . '=' . $file;
-					$t_combine['min'] = 'CDEF:min' . $node . '=min' . $file;
-					$t_combine['max'] = 'CDEF:max' . $node . '=min' . $file;
-				} else {
-					$t_combine['avg'] .= ',' . $file . ',ADDNAN';
-					$t_combine['min'] .= ',min' . $file . ',ADDNAN';
-					$t_combine['max'] .= ',max' . $file . ',ADDNAN';
+					if($num == 0) {
+						$t_combine['avg' . $ds] = sprintf("CDEF:%s%s=%s%s",
+							$ds, $node, $ds, $file);
+						$t_combine['min' . $ds] = sprintf("CDEF:min%s%s=min%s%s",
+							$ds, $node, $ds, $file);
+						$t_combine['max' . $ds] = sprintf("CDEF:max%s%s=max%s%s",
+							$ds, $node, $ds, $file);
+					} else {
+						$t_combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
+							$ds, $file);
+						$t_combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
+							$ds, $file);
+						$t_combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
+							$ds, $file);
+					}
 				}
 
 				$num++;
@@ -132,14 +144,22 @@ class YarfGeneric extends Yarf {
 
 			$rrd = array_merge($rrd, array_values($t_combine));
 
-			if($count == 0) {
-				$combine['avg'] = 'CDEF:value=' . $node;
-				$combine['min'] = 'CDEF:minvalue=min' . $node;
-				$combine['max'] = 'CDEF:maxvalue=max' . $node;
-			} else {
-				$combine['avg'] .= ',' . $node . ',ADDNAN';
-				$combine['min'] .= ',min' . $node . ',ADDNAN';
-				$combine['max'] .= ',max' . $node . ',ADDNAN';
+			foreach($this->details['data'] as $ds => $data) {
+				if($count == 0) {
+					$combine['avg' . $ds] = sprintf("CDEF:%s=%s%s",
+						$ds, $ds, $node);
+					$combine['min' . $ds] = sprintf("CDEF:min%s=min%s%s",
+						$ds, $ds, $node);
+					$combine['max' . $ds] = sprintf("CDEF:max%s=max%s%s",
+						$ds, $ds, $node);
+				} else {
+					$combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
+						$ds, $node);
+					$combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
+						$ds, $node);
+					$combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
+						$ds, $node);
+				}
 			}
 
 			$count++;
@@ -148,15 +168,45 @@ class YarfGeneric extends Yarf {
 		$rrd = array_merge($rrd, array_values($combine));
 		$rrd = array_merge($rrd, $this->rrdDate($options));
 
-		$rrd[] = 'VDEF:lastvalue=value,LAST';
-		$rrd[] = 'LINE1:value#3020ee:' . $this->details['legend'];
-		$rrd[] = 'GPRINT:minvalue:MIN:Min\: %4.0lf%S	\g';
-		$rrd[] = 'GPRINT:value:AVERAGE:Avg\: %4.0lf%S	\g';
-		$rrd[] = 'GPRINT:maxvalue:MAX:Max\: %4.0lf%S	\g';
-		$rrd[] = 'GPRINT:lastvalue:Last\: %4.0lf%S\j';
+		foreach($this->details['data'] as $ds => $data) {
+			$rrd[] = sprintf("VDEF:last%s=%s,LAST",
+				$ds, $ds);
+			$rrd[] = sprintf("LINE1:%s%s:%s",
+				$ds, $data['color'], $data['legend']);
+			$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %%4.0lf%%S	\\g",
+				$ds);
+			$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %%4.0lf%%S	\\g",
+				$ds);
+			$rrd[] = sprintf("GPRINT:max%s:MAX:Max\\: %%4.0lf%%S	\\g",
+				$ds);
+			$rrd[] = sprintf("GPRINT:last%s:Last\\: %%4.0lf%%S\\j",
+				$ds);
+		}
 
 		return $rrd;
 	}
-}
 
-?>
+	/**
+	 * set $details with overrides
+	 * @param array $defaults
+	 * @param array $overrides
+	 * @return array
+	 */
+	public function setDetails($defaults = array(), $overrides = array()) {
+		$details = $defaults;
+
+		foreach($defaults as $key => $value) {
+			if(!array_key_exists($key, $overrides)) {
+				continue;
+			}
+
+			if(is_array($value)) {
+				$details[$key] = $this->setDetails($value, $overrides[$key]);
+			} else {
+				$details[$key] = $overrides[$key];
+			}
+		}
+
+		return $details;
+	}
+}
