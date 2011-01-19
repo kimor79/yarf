@@ -95,10 +95,8 @@ class YarfGeneric extends Yarf {
 	 * @return array
 	 */
 	public function rrdOptions($nodes = array(), $options = array()) {
-		$node_count = count($nodes);
-
 		$label = $this->details['label'];
-		if($node_count > 1) {
+		if(count($nodes) > 1) {
 			if(array_key_exists('combined', $this->details)) {
 				if(array_key_exists('average', $this->details['combined'])) {
 					if($this->details['combined']['average']) {
@@ -192,7 +190,7 @@ class YarfGeneric extends Yarf {
 		foreach($this->details['data'] as $o_ds => $data) {
 			$ds = $o_ds;
 
-			if($node_count > 1) {
+			if($count > 1) {
 				if(array_key_exists('combined', $this->details)) {
 					if(array_key_exists('average', $this->details['combined'])) {
 						if($this->details['combined']['average']) {
