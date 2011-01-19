@@ -197,13 +197,23 @@ class YarfGeneric extends Yarf {
 	public function setDetails($defaults = array(), $overrides = array()) {
 		$details = $defaults;
 
-		foreach($defaults as $key => $value) {
+		foreach(array_merge($overrides, $defaults) as $key => $junk) {
 			if(!array_key_exists($key, $overrides)) {
 				continue;
 			}
 
-			if(is_array($value)) {
-				$details[$key] = $this->setDetails($value, $overrides[$key]);
+			if(!array_key_exists($key, $defaults)) {
+				$details[$key] = $overrides[$key];
+				continue;
+			}
+
+			if(is_array($defaults[$key])) {
+				if(!is_array($overrides[$key])) {
+					unset($details[$key]);
+					continue;
+				}
+
+				$details[$key] = $this->setDetails($details[$key], $overrides[$key]);
 			} else {
 				$details[$key] = $overrides[$key];
 			}
