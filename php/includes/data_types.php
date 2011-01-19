@@ -59,6 +59,7 @@ $builtin_data_types = array(
 			'label' => 'Load',
 			'paths' => array(
 				'load/load',
+				'snmp/load',
 			),
 			'vertical_label' => '',
 		),
@@ -84,6 +85,7 @@ $builtin_data_types = array(
 			'label' => 'Uptime',
 			'paths' => array(
 				'uptime/uptime',
+				'snmp/uptime',
 			),
 			'vertical_label' => 'Days',
 		),
