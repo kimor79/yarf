@@ -38,6 +38,7 @@ class YarfGeneric extends Yarf {
 				'color' => '#3020ee',
 				'legend' => '',
 				'line' => 1,
+				'scale' => '',
 			),
 		),
 		'label' => 'Generic Graph',
@@ -172,7 +173,20 @@ class YarfGeneric extends Yarf {
 		$rrd = array_merge($rrd, array_values($combine));
 		$rrd = array_merge($rrd, $this->rrdDate($options));
 
-		foreach($this->details['data'] as $ds => $data) {
+		foreach($this->details['data'] as $o_ds => $data) {
+			$ds = $o_ds;
+
+			if($data['scale']) {
+				$ds .= 'scaled';
+				$rrd[] = sprintf("CDEF:%s=%s,%s",
+					$ds, $o_ds, $data['scale']);
+				$rrd[] = sprintf("CDEF:min%s=min%s,%s",
+					$ds, $o_ds, $data['scale']);
+				$rrd[] = sprintf("CDEF:max%s=max%s,%s",
+					$ds, $o_ds, $data['scale']);
+			}
+
+
 			$rrd[] = sprintf("VDEF:last%s=%s,LAST",
 				$ds, $ds);
 

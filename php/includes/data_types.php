@@ -70,10 +70,16 @@ $builtin_data_types = array(
 	'uptime' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
+			'data' => array(
+				'value' => array(
+					'scale' => '86400,/',
+				),
+			),
 			'label' => 'Uptime',
 			'paths' => array(
 				'uptime/uptime',
 			),
+			'vertical_label' => 'Days',
 		),
 		'file' => 'generic',
 	),
