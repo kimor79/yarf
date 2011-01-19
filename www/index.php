@@ -136,6 +136,15 @@ Event.onDOMReady(function() {
 	Event.on('left_toggle', 'click', function(ev) {
 		layout.getUnitByPosition('left').toggle();
 	});
+
+<?php
+if(!empty($row_images)) {
+	foreach($row_images as $key => $img) {
+		printf("	document.images['graph%s'].src = '%s';\n",
+			$key, $img);
+	}
+}
+?>
 });
 
 function submitGraph() {

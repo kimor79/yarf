@@ -38,6 +38,7 @@ if(empty($req)) {
 }
 
 $row_combined = array();
+$row_images = array();
 $row_included = array();
 $row_nodes = array();
 $int = 0;
@@ -72,8 +73,11 @@ foreach($req['graph'] as $query) {
 <table>
  <tr>
 <?php
+$int = 0;
 foreach($row_combined as $row) {
-	echo '  <td><img src="img/graph.php?expression=' . urlencode($req['expression']) . '&' . $row . '"></td>' . "\n";
+	$row_images['c' . $int] = 'img/graph.php?expression=' . urlencode($req['expression']) . '&' . $row;
+	echo '  <td><img id="graphc' . $int . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
+	$int++;
 }
 ?>
  </tr>
@@ -86,10 +90,13 @@ foreach($row_included as $row) {
 ?>
  </tr>
 <?php
+$int = 0;
 foreach($row_nodes as $node => $n_query) {
 	echo ' <tr>' . "\n";
 	foreach($n_query as $query) {
-		echo '  <td><img src="img/graph.php?node=' . urlencode($node) . '&' . $query . '"></td>' . "\n";
+		$row_images['n' . $int] = 'img/graph.php?node=' . urlencode($node) . '&' . $query;
+		echo '  <td><img id="graphn' . $int . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
+		$int++;
 	}
 	echo ' </tr>';
 }
