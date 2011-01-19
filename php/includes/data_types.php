@@ -71,6 +71,26 @@ $builtin_data_types = array(
 		'file' => 'tcpconns',
 	),
 
+	'temperature' => array(
+		'class' => 'YarfGeneric',
+		'class_options' => array(
+			'combined' => array(
+				'average' => true,
+			),
+			'data' => array(
+				'value' => array(
+					'scale' => '9,*,5,/,32,+'
+				),
+			),
+			'label' => 'Temperature',
+			'paths' => array(
+				'snmp/temperature',
+			),
+			'vertical_label' => 'Fahrenheit',
+		),
+		'file' => 'generic',
+	),
+
 	'uptime' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
