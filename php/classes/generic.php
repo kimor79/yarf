@@ -134,41 +134,13 @@ class YarfGeneric extends Yarf {
 
 			$node = str_replace('.', '_', $node);
 
-			$num = 0;
-			$t_combine = array();
+			$t_rrd = $this->rrdDef($node, $files, array_keys($this->details['data']));
 
-			foreach($files as $o_file) {
-				$file = str_replace(array('/', '.'), '_', $o_file);
-
-				foreach($this->details['data'] as $ds => $data) {
-					$rrd[] = sprintf("DEF:%s%s=%s:%s:AVERAGE",
-						$ds, $file, $o_file, $ds);
-					$rrd[] = sprintf("DEF:min%s%s=%s:%s:MIN",
-						$ds, $file, $o_file, $ds);
-					$rrd[] = sprintf("DEF:max%s%s=%s:%s:MAX",
-						$ds, $file, $o_file, $ds);
-
-					if($num == 0) {
-						$t_combine['avg' . $ds] = sprintf("CDEF:%s%s=%s%s",
-							$ds, $node, $ds, $file);
-						$t_combine['min' . $ds] = sprintf("CDEF:min%s%s=min%s%s",
-							$ds, $node, $ds, $file);
-						$t_combine['max' . $ds] = sprintf("CDEF:max%s%s=max%s%s",
-							$ds, $node, $ds, $file);
-					} else {
-						$t_combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
-							$ds, $file);
-						$t_combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
-							$ds, $file);
-						$t_combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
-							$ds, $file);
-					}
-				}
-
-				$num++;
+			if(empty($t_rrd)) {
+				continue;
 			}
 
-			$rrd = array_merge($rrd, array_values($t_combine));
+			$rrd = array_merge($rrd, $t_rrd);
 
 			foreach($this->details['data'] as $ds => $data) {
 				if($count == 0) {

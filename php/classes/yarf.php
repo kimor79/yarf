@@ -115,6 +115,54 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
+	 * Generate DEF and CDEF for a node
+	 * @param string $node
+	 * @param array $files
+	 * @param array $sources
+	 * @return array
+	 */
+	public function rrdDef($node, $files, $sources) {
+		$output = array();
+
+		$num = 0;
+		$combine = array();
+
+		foreach($files as $o_file) {
+			$file = str_replace(array('/', '.'), '_', $o_file);
+
+			foreach($sources as $ds) {
+				$output[] = sprintf("DEF:%s%s=%s:%s:AVERAGE",
+					$ds, $file, $o_file, $ds);
+				$output[] = sprintf("DEF:min%s%s=%s:%s:MIN",
+					$ds, $file, $o_file, $ds);
+				$output[] = sprintf("DEF:max%s%s=%s:%s:MAX",
+					$ds, $file, $o_file, $ds);
+
+				if($num == 0) {
+					$combine['avg' . $ds] = sprintf("CDEF:%s%s=%s%s",
+						$ds, $node, $ds, $file);
+					$combine['min' . $ds] = sprintf("CDEF:min%s%s=min%s%s",
+						$ds, $node, $ds, $file);
+					$combine['max' . $ds] = sprintf("CDEF:max%s%s=max%s%s",
+						$ds, $node, $ds, $file);
+				} else {
+					$combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
+						$ds, $file);
+					$combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
+						$ds, $file);
+					$combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
+						$ds, $file);
+				}
+			}
+
+			$num++;
+		}
+
+		$output = array_merge($output, array_values($combine));
+		return $output;
+	}
+
+	/**
 	 * Generate the date (which may be an archive date)
 	 * @param array $options
 	 * @return array
