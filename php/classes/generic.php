@@ -64,37 +64,7 @@ class YarfGeneric extends Yarf {
 	 * @return array array of files
 	 */
 	public function rrdFiles($node = '', $options = array()) {
-		$files = array();
-		$paths = $this->paths;
-
-		if(array_key_exists('archive', $options)) {
-			$archive = $this->findArchive($options['archive']);
-
-			if($archive) {
-				$paths = array($archive);
-			}
-		}
-
-		foreach($paths as $path) {
-			foreach($this->details['paths'] as $s_path) {
-				$full_path = sprintf("%s/%s/%s.rrd",
-					$path, $node, $s_path);
-
-				$globs = glob($full_path);
-				if(empty($globs)) {
-					continue;
-				}
-
-				foreach($globs as $file) {
-					if(file_exists($file)) {
-						$files[] = $file;
-						continue;
-					}
-				}
-			}
-		}
-
-		return $files;
+		return parent::rrdFiles($node, $options, $this->details['paths']);
 	}
 
 	/**

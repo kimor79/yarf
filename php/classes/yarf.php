@@ -119,9 +119,10 @@ class Yarf extends ApiProducerDetails {
 	 * @param string $node
 	 * @param array $files
 	 * @param array $sources
+	 * @param string $prefix optional string to prepend to final CDEF
 	 * @return array
 	 */
-	public function rrdDef($node, $files, $sources) {
+	public function rrdDef($node = '', $files = array(), $sources = array(), $prefix = '') {
 		$output = array();
 
 		$num = 0;
@@ -131,27 +132,27 @@ class Yarf extends ApiProducerDetails {
 			$file = str_replace(array('/', '.'), '_', $o_file);
 
 			foreach($sources as $ds) {
-				$output[] = sprintf("DEF:%s%s=%s:%s:AVERAGE",
-					$ds, $file, $o_file, $ds);
-				$output[] = sprintf("DEF:min%s%s=%s:%s:MIN",
-					$ds, $file, $o_file, $ds);
-				$output[] = sprintf("DEF:max%s%s=%s:%s:MAX",
-					$ds, $file, $o_file, $ds);
+				$output[] = sprintf("DEF:%s%s%s=%s:%s:AVERAGE",
+					$prefix, $ds, $file, $o_file, $ds);
+				$output[] = sprintf("DEF:min%s%s%s=%s:%s:MIN",
+					$prefix, $ds, $file, $o_file, $ds);
+				$output[] = sprintf("DEF:max%s%s%s=%s:%s:MAX",
+					$prefix, $ds, $file, $o_file, $ds);
 
 				if($num == 0) {
-					$combine['avg' . $ds] = sprintf("CDEF:%s%s=%s%s",
-						$ds, $node, $ds, $file);
-					$combine['min' . $ds] = sprintf("CDEF:min%s%s=min%s%s",
-						$ds, $node, $ds, $file);
-					$combine['max' . $ds] = sprintf("CDEF:max%s%s=max%s%s",
-						$ds, $node, $ds, $file);
+					$combine['avg' . $ds] = sprintf("CDEF:%s%s%s=%s%s%s",
+						$prefix, $ds, $node, $prefix, $ds, $file);
+					$combine['min' . $ds] = sprintf("CDEF:min%s%s%s=min%s%s%s",
+						$prefix, $ds, $node, $prefix, $ds, $file);
+					$combine['max' . $ds] = sprintf("CDEF:max%s%s%s=max%s%s%s",
+						$prefix, $ds, $node, $prefix, $ds, $file);
 				} else {
-					$combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
-						$ds, $file);
-					$combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
-						$ds, $file);
-					$combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
-						$ds, $file);
+					$combine['avg' . $ds] .= sprintf(",%s%s%s,ADDNAN",
+						$prefix, $ds, $file);
+					$combine['min' . $ds] .= sprintf(",min%s%s%s,ADDNAN",
+						$prefix, $ds, $file);
+					$combine['max' . $ds] .= sprintf(",max%s%s%s,ADDNAN",
+						$prefix, $ds, $file);
 				}
 			}
 
@@ -201,6 +202,39 @@ class Yarf extends ApiProducerDetails {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get rrd files
+	 * @param string $node
+	 * @param array $options
+	 * @param array file name patterns
+	 * @return array
+	 */
+	public function rrdFiles($node, $options, $globs) {
+		$files = array();
+		$search = $this->paths;
+
+		if(array_key_exists('archive', $options)) {
+			$archive = $this->findArchive($options['archive']);
+			if($archive) {
+				$search = array($archive);
+			}
+		}
+
+		foreach($search as $path) {
+			foreach($globs as $glob) {
+				$full = sprintf("%s/%s/%s.rrd",
+					$path, $node, $glob);
+
+				$list = glob($full, GLOB_NOSORT|GLOB_BRACE);
+				if(!empty($list)) {
+					$files = array_merge($list);
+				}
+			}
+		}
+
+		return $files;
 	}
 
 	/**
