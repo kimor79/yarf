@@ -63,6 +63,7 @@ label {
 }
 
 .selector li {
+	border: 2px solid #8080FF;
 	float: left;
 	list-style: none;
 	margin: 0 10px 10px 0;
@@ -70,14 +71,9 @@ label {
 }
 
 .selector li h3 {
-	background: #FFFFFF;
 	margin: 0;
 	padding: 5px 0 0;
 	text-align: center;
-}
-
-.selector li div {
-	border: 2px solid;
 }
 
 .selector li p {
