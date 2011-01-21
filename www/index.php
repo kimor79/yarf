@@ -42,11 +42,6 @@ $yui = rtrim(get_config('yui', 'base_uri'), '/');
   <title>YARF - Yet Another RRD Frontend</title>
 
 <style type="text/css">
-body {
-	margin: 0px;
-	padding: 0;
-}
-
 #expression {
 	height: 70%;
 	margin: 1%;
@@ -54,38 +49,12 @@ body {
 	width: 98%;
 }
 
-label {
-	font-weight: bold;
-}
-
-.img {
-	border: none;
-}
-
-.selector li {
-	border: 2px solid #8080FF;
-	float: left;
-	list-style: none;
-	margin: 0 10px 10px 0;
-	padding: 0;
-}
-
-.selector li h3 {
-	margin: 0;
-	padding: 5px 0 0;
-	text-align: center;
-}
-
-.selector li p {
-	margin: 0;
-	padding: 5px 8px 5px;
-}
-
 #quicklink {
 	width: 200px;
 }
 </style>
-<link rel="stylesheet" type="text/css"href="<?php echo $yui; ?>/reset-fonts-grids/reset-fonts-grids.css">
+
+<link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/reset-fonts-grids/reset-fonts-grids.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/assets/skins/sam/skin.css">
 <script type="text/javascript" src="<?php echo $yui; ?>/utilities/utilities.js"></script> 
 <script type="text/javascript" src="<?php echo $yui; ?>/container/container-min.js"></script> 
@@ -94,6 +63,8 @@ label {
 <script type="text/javascript" src="<?php echo $yui; ?>/event-delegate/event-delegate-min.js"></script> 
 <script type="text/javascript" src="<?php echo $yui; ?>/resize/resize-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui; ?>/layout/layout-min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/css/default.css">
 
  </head>
 

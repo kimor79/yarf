@@ -49,7 +49,8 @@ if(file_exists($quicklinks_file)) {
 	$quicklinks = @file($quicklinks_file, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 
 	if(!empty($quicklinks)) {
-		echo 'Quick Links<br>' . "\n";
+		echo '<div id="quicknav">';
+		echo '<label for="quicklink">Quick Links</label><br>' . "\n";
 		echo '<select id="quicklink" onChange="showQuickLink();">' . "\n";
 		echo ' <option value=""></option>' . "\n";
 
@@ -69,6 +70,7 @@ if(file_exists($quicklinks_file)) {
 		}
 
 		echo '</select>' . "\n";
+		echo '</div>';
 	}
 }
 ?>
@@ -129,7 +131,7 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 </p>
 <p>
 <label for="data">Data: <label>
-<select name="data">
+<select name="data" class="data">
  <option value=""></option>
 <?php
 	foreach($data_types as $type => $data) {
