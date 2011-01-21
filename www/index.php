@@ -84,6 +84,10 @@ label {
 	margin: 0;
 	padding: 5px 8px 5px;
 }
+
+#quicklink {
+	width: 200px;
+}
 </style>
 <link rel="stylesheet" type="text/css"href="<?php echo $yui; ?>/reset-fonts-grids/reset-fonts-grids.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/assets/skins/sam/skin.css">
@@ -169,6 +173,18 @@ if(!empty($row_images)) {
 }
 ?>
 });
+
+function showQuickLink() {
+	var select = document.getElementById('quicklink');
+	var url = select.options[select.selectedIndex];
+
+	if(url.value != '') {
+		window.location = url.value;
+		return;
+	}
+
+	window.location = window.location.pathname;
+};
 
 function submitGraph() {
 	loading.show();

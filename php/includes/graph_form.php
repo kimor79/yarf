@@ -42,8 +42,38 @@ if(array_key_exists('graph', $req)) {
 
 <table id="gf_main">
  <tr>
-  <td id="gf_left" width="250"></td>
- <td id="gf_center">
+  <td id="gf_left" width="250">
+<?php
+$quicklinks_file = get_config('quicklinks', 'file');
+if(file_exists($quicklinks_file)) {
+	$quicklinks = @file($quicklinks_file, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+
+	if(!empty($quicklinks)) {
+		echo 'Quick Links<br>' . "\n";
+		echo '<select id="quicklink" onChange="showQuickLink();">' . "\n";
+		echo ' <option value=""></option>' . "\n";
+
+		foreach($quicklinks as $line) {
+			if(substr($line, 0, 1) == '#') {
+				continue;
+			}
+
+			list($url, $desc) = explode(' ', $line, 2);
+			$url = strstr($url, '?');
+
+			echo ' <option ';
+			if('?' . $_SERVER['QUERY_STRING'] == $url) {
+				echo 'selected ';
+			}
+			printf("value=\"%s\">%s</option>\n", $url, $desc);
+		}
+
+		echo '</select>' . "\n";
+	}
+}
+?>
+  </td>
+  <td id="gf_center">
 
 <ul class="selector">
 <?php
