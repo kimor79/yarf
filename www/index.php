@@ -61,6 +61,29 @@ label {
 .img {
 	border: none;
 }
+
+.selector li {
+	float: left;
+	list-style: none;
+	margin: 0 10px 10px 0;
+	padding: 0;
+}
+
+.selector li h3 {
+	background: #FFFFFF;
+	margin: 0;
+	padding: 5px 0 0;
+	text-align: center;
+}
+
+.selector li div {
+	border: 2px solid;
+}
+
+.selector li p {
+	margin: 0;
+	padding: 5px 8px 5px;
+}
 </style>
 <link rel="stylesheet" type="text/css"href="<?php echo $yui; ?>/reset-fonts-grids/reset-fonts-grids.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/assets/skins/sam/skin.css">

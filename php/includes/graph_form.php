@@ -40,32 +40,32 @@ if(array_key_exists('graph', $req)) {
 
 ?>
 
-<table width="99%">
+<table id="gf_main">
  <tr>
+  <td id="gf_left" width="250"></td>
+ <td id="gf_center">
+
+<ul class="selector">
 <?php
 for($graph_num = 1; $graph_num < 5; $graph_num++) {
 ?>
 <!-- Begin column <?php echo $graph_num; ?> -->
-  <td>
 
+ <li><h3>Graph <?php echo $graph_num; ?></h3>
 <form id="graph<?php echo $graph_num; ?>" onSubmit="return false;">
-<table>
- <tr>
-  <th colspan="2">Graph <?php echo $graph_num; ?></th>
- </tr>
- <tr>
-  <td><label for="archive">Archive: </label></td>
-  <td><input type="text" id="archive" name="archive" value="<?php
+<div>
+<p>
+<label for="archive">Archive: </label>
+<input type="text" id="archive" name="archive" value="<?php
 if(array_key_exists($graph_num, $desired_graphs)) {
 	if(array_key_exists('archive', $desired_graphs[$graph_num])) {
 		echo $desired_graphs[$graph_num]['archive'];
 	}
 }
-?>" size="7"></td>
- </tr>
- <tr>
-  <td><label>Time: </label></td>
-  <td>
+?>" size="7">
+</p>
+<p>
+<label>Time: </label>
 <select name="t_val">
 <?php
 	for($time_num = 1; $time_num < 13; $time_num++) {
@@ -96,11 +96,9 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 	}
 ?>
 </select>
-  </td>
- </tr>
- <tr>
-  <td><label for="data">Data: <label></td>
-  <td>
+</p>
+<p>
+<label for="data">Data: <label>
 <select name="data">
  <option value=""></option>
 <?php
@@ -117,24 +115,24 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 	}
 ?>
 </select>
-  </td>
- </tr>
-</table>
+</p>
+</div>
 </form>
+ </li>
 
 <!-- End column <?php echo $graph_num; ?> -->
-  </td>
 <?php
 }
 ?>
- </tr>
- <tr>
-  <td colspan="4" align=center>
+</ul>
+
+  </td>
+  <td id="gf_right">
 <form id="submit_graph" onSubmit="submitGraph(); return false;">
  <input type="submit" name="graph" value="Graph">
 </form>
+
+<span id="top_toggle">toggle</span>
   </td>
  </tr>
 </table>
-
-<span id="top_toggle">toggle</span>
