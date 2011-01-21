@@ -95,7 +95,7 @@ label {
 <script type="text/javascript" src="<?php echo $yui; ?>/resize/resize-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui; ?>/layout/layout-min.js"></script>
 
- <head>
+ </head>
 
 <body class="yui-skin-sam">
  <div id="layouttop"><?php include('yarf/includes/graph_form.php'); ?></div>
