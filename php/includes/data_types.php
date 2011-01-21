@@ -32,6 +32,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $data_types = array();
 
 $builtin_data_types = array(
+	'Disk IO Bytes (All)' => array(
+		'class' => 'YarfGeneric',
+		'class_options' => array(
+			'data' => array(
+				'read' => array(
+					'color' => '#3020EE',
+					'legend' => 'Reads',
+				),
+				'write' => array(
+					'color' => '#00FF00',
+					'legend' => 'Writes',
+				),
+				'value' => NULL,
+			),
+			'paths' => array(
+				'disk-*/disk_octets',
+			),
+			'rrd' => array(
+				'-v' => 'Bytes/sec',
+			),
+			'title' => 'Disk IO (All)',
+		),
+		'file' => 'generic',
+	),
+
 	'load' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(

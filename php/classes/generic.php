@@ -80,9 +80,16 @@ class YarfGeneric extends Yarf {
 				$full_path = sprintf("%s/%s/%s.rrd",
 					$path, $node, $s_path);
 
-				if(file_exists($full_path)) {
-					$files[] = $full_path;
+				$globs = glob($full_path);
+				if(empty($globs)) {
 					continue;
+				}
+
+				foreach($globs as $file) {
+					if(file_exists($file)) {
+						$files[] = $file;
+						continue;
+					}
 				}
 			}
 		}
