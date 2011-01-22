@@ -145,6 +145,11 @@ class YarfGeneric extends Yarf {
 
 		foreach($this->details['data'] as $o_ds => $data) {
 			$ds = $o_ds;
+			$format = '%4.0lf%s';
+
+			if(array_key_exists('format', $data)) {
+				$format = $data['format'];
+			}
 
 			if($count > 1) {
 				if(array_key_exists('combined', $this->details)) {
@@ -192,14 +197,14 @@ class YarfGeneric extends Yarf {
 					$ds, $data['color'], $data['legend']);
 			}
 
-			$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %%4.0lf%%S	\\g",
-				$ds);
-			$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %%4.0lf%%S	\\g",
-				$ds);
-			$rrd[] = sprintf("GPRINT:max%s:MAX:Max\\: %%4.0lf%%S	\\g",
-				$ds);
-			$rrd[] = sprintf("GPRINT:last%s:Last\\: %%4.0lf%%S\\j",
-				$ds);
+			$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %s	\\g",
+				$ds, $format);
+			$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %s	\\g",
+				$ds, $format);
+			$rrd[] = sprintf("GPRINT:max%s:MAX:Max\\: %s	\\g",
+				$ds, $format);
+			$rrd[] = sprintf("GPRINT:last%s:Last\\: %s\\j",
+				$ds, $format);
 		}
 
 		return $rrd;

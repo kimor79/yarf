@@ -38,10 +38,12 @@ $builtin_data_types = array(
 			'data' => array(
 				'read' => array(
 					'color' => '#3020EE',
+					'format' => '%7.2lf%s',
 					'legend' => 'Reads',
 				),
 				'write' => array(
 					'color' => '#00FF00',
+					'format' => '%7.2lf%s',
 					'legend' => 'Writes',
 				),
 				'value' => NULL,
