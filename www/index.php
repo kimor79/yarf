@@ -141,6 +141,40 @@ if(!empty($row_images)) {
 ?>
 });
 
+function parseExpression() {
+	var param = '';
+
+<?php
+if(empty($available_nodes)) {
+?>
+	var expr = document.getElementById('expression').value;
+	if(expr != '') {
+		param = 'expression=' + encodeURIComponent(expr);
+	}
+<?php
+} else {
+?>
+	var expr = document.getElementById('expression');
+
+	var nodes = new Array();
+	var n = 0;
+	for(var i = 0; i < expr.options.length; i++) {
+		if(expr.options[i].selected == true) {
+			nodes[n] = expr.options[i].value;
+			n++;
+		}
+	}
+
+	if(n > 0) {
+		param = 'expression=' + encodeURIComponent(nodes.join(','));
+	}
+<?php
+}
+?>
+
+	return param;
+}
+
 function showQuickLink() {
 	var select = document.getElementById('quicklink');
 	var url = select.options[select.selectedIndex];
@@ -157,12 +191,7 @@ function submitGraph() {
 	loading.show();
 	var params = new Array();
 
-	var expr = document.getElementById('expression').value;
-	if(expr != '') {
-		params[0] = 'expression=' + encodeURIComponent(expr);
-	} else {
-		params[0] = '';
-	}
+	params[0] = parseExpression();
 
 	for(var graph = 1; graph < 5; graph++) {
 		var oForm = document.getElementById('graph' + graph);

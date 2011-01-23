@@ -30,16 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
 $nf_label = 'Node(s)';
-$nf_nodes = array();
 
 if(get_config('nodes', 'use_nodegroups')) {
 	$nf_label = 'Expression';
-} else {
-	if(get_config('nodes', 'file')) {
-		$nf_nodes = file(get_config('nodes', 'file'), FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
-	} elseif(get_config('nodes', 'list')) {
-		$nf_nodes = explode(',', get_config('nodes', 'list'));
-	}
 }
 
 ?>
@@ -49,15 +42,15 @@ if(get_config('nodes', 'use_nodegroups')) {
 <label for="expression"><?php echo $nf_label; ?>:</label>
 </div>
 <?php
-if(!empty($nf_nodes)) {
+if(!empty($available_nodes)) {
 	$nf_get_nodes = array();
 	if(array_key_exists('expression', $_GET)) {
 		$nf_get_nodes = explode(',', $_GET['expression']);
 	}
 
-	echo '<select name="expression" multiple="multiple">' . "\n";
+	echo '<select id="expression" name="expression" multiple="multiple">' . "\n";
 
-	foreach($nf_nodes as $node) {
+	foreach($available_nodes as $node) {
 		if(substr($node, 0, 1) == '#') {
 			continue;
 		}

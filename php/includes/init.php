@@ -98,6 +98,12 @@ $yarf->setParameters($req, array('outputFormat' => $default_format));
 if(get_config('nodes', 'use_nodegroups')) {
 	require_once('nodegroups_client/classes/client.php');
 	$ngclient = new NodegroupsClient();
+} else {
+	if(get_config('nodes', 'file')) {
+		$available_nodes = file(get_config('nodes', 'file'), FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+	} elseif(get_config('nodes', 'list')) {
+		$available_nodes = explode(',', get_config('nodes', 'list'));
+	}
 }
 
 ?>
