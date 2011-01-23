@@ -93,10 +93,15 @@ class Yarf extends ApiProducerDetails {
 	 * @param array
 	 */
 	public function parseNodes($expression) {
+		global $ngclient;
+
 		$nodes = array();
 
-		if(get_config('nodes', 'use_nodegroups')) {
-			// nodegroups client
+		if(isset($ngclient)) {
+			$parsed = $ngclient->getNodesFromExpression($expression);
+			if(!empty($parsed)) {
+				$nodes = $parsed;
+			}
 
 			return $nodes;
 		}

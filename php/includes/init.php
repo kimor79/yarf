@@ -95,4 +95,9 @@ if(!isset($default_format)) {
 
 $yarf->setParameters($req, array('outputFormat' => $default_format));
 
+if(get_config('nodes', 'use_nodegroups')) {
+	require_once('nodegroups_client/classes/client.php');
+	$ngclient = new NodegroupsClient();
+}
+
 ?>
