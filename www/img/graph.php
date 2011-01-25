@@ -104,7 +104,7 @@ if(array_key_exists('expression', $input)) {
 }
 
 if(array_key_exists('node', $input)) {
-	$entries = array_merge($nodes, $input['node']);
+	$entries = array_merge($entries, $input['node']);
 }
 
 if(empty($entries)) {
