@@ -34,6 +34,8 @@ require_once('api_producer/v1/classes/details.php');
 class Yarf extends ApiProducerDetails {
 
 	private $archive_path = '';
+	protected $base_paths = array();
+	protected $combined_average = false;
 
 	public $optional = array(
 		'archive' => 'archive',
@@ -44,14 +46,15 @@ class Yarf extends ApiProducerDetails {
 		't_val' => 'digit',
 	);
 
-	protected $paths = array();
 
 	public $required = array();
+	protected $rrd_options = array();
 
 	public $sanitize = array(
 		'node' => '_multi_',
 	);
 
+	protected $title = 'Generic Graph';
 	private $trim_domain = false;
 
 	public function __construct() {
@@ -61,8 +64,16 @@ class Yarf extends ApiProducerDetails {
 
 		$this->contentType('png', 'image/png');
 
-		$this->paths = explode(PATH_SEPARATOR, get_config('rrd_paths'));
+		$this->base_paths = explode(PATH_SEPARATOR, get_config('rrd_paths'));
 		$this->trim_domain = get_config('trim_domain');
+	}
+
+	/**
+	 * Whether to average combined graph
+	 * @return bool
+	 */
+	public function combinedAverage() {
+		return $this->trueFalse($this->combined_average, false);
 	}
 
 	/**
@@ -85,6 +96,28 @@ class Yarf extends ApiProducerDetails {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Get the datasources
+	 * @return array
+	 */
+	public function getDS() {
+		return array();
+	}
+
+	/**
+	 * Get the title
+	 * @return string
+	 */
+	public function getTitle() {
+		$title = $this->title;
+
+		if($this->combinedAverage()) {
+			$title .= ' (Avg)';
+		}
+
+		return $title;
 	}
 
 	/**
@@ -120,6 +153,31 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
+	 * Generate the date (which may be an archive date)
+	 * @param array $options
+	 * @return array
+	 */
+	public function rrdDate($options = array()) {
+		$date = date('r');
+
+		if(array_key_exists('archive', $options)) {
+			$file = $this->findArchive($options['archive']) . '/timestamp';
+			if(is_file($file)) {
+				$time = file_get_contents($file);
+				$time = trim($time);
+				$date = date('r', $time);
+			}
+		}
+
+		$rrd = array(
+			'COMMENT:' . str_replace(':', '\:', $date) . '\c',
+			'COMMENT:\s',
+		);
+
+		return $rrd;
+	}
+
+	/**
 	 * Generate DEF and CDEF for a node
 	 * @param string $node
 	 * @param array $files
@@ -136,7 +194,7 @@ class Yarf extends ApiProducerDetails {
 		foreach($files as $o_file) {
 			$file = str_replace(array('/', '.'), '_', $o_file);
 
-			foreach($sources as $ds) {
+			foreach($sources as $ds => $junk) {
 				$output[] = sprintf("DEF:%s%s%s=%s:%s:AVERAGE",
 					$prefix, $ds, $file, $o_file, $ds);
 				$output[] = sprintf("DEF:min%s%s%s=%s:%s:MIN",
@@ -169,31 +227,6 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
-	 * Generate the date (which may be an archive date)
-	 * @param array $options
-	 * @return array
-	 */
-	protected function rrdDate($options = array()) {
-		$date = date('r');
-
-		if(array_key_exists('archive', $options)) {
-			$file = $this->findArchive($options['archive']) . '/timestamp';
-			if(is_file($file)) {
-				$time = file_get_contents($file);
-				$time = trim($time);
-				$date = date('r', $time);
-			}
-		}
-
-		$rrd = array(
-			'COMMENT:' . str_replace(':', '\:', $date) . '\c',
-			'COMMENT:\s',
-		);
-
-		return $rrd;
-	}
-
-	/**
 	 * Verify if rrd files exist for node
 	 * @param string $node
 	 * @param array $options
@@ -218,7 +251,7 @@ class Yarf extends ApiProducerDetails {
 	 */
 	public function rrdFiles($node, $options, $globs) {
 		$files = array();
-		$search = $this->paths;
+		$search = $this->base_paths;
 
 		if(array_key_exists('archive', $options)) {
 			$archive = $this->findArchive($options['archive']);
@@ -243,13 +276,49 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
+	 * Generate graph statemens (LINE/AREA)
+	 * @param string $ds
+	 * @param array $data
+	 * @return array
+	 */
+	public function rrdGraph($ds, $data) {
+		$color = '#3F3F3F';
+		$legend = '';
+		$line = 1;
+		$output = array();
+
+		if(array_key_exists('color', $data)) {
+			$color = $data['color'];
+		}
+
+		if(array_key_exists('legend', $data)) {
+			$legend = $data['legend'];
+		}
+
+		if(array_key_exists('line', $data)) {
+			if(ctype_digit((string) $data['line'])) {
+				$line = $data['line'];
+			}
+		}
+
+		if(array_key_exists('area', $data)) {
+			$output[] = sprintf("AREA:%s%s", $ds, $color);
+		}
+
+		$output[] = sprintf("LINE%s:%s%s:%s",
+			$data['line'], $ds, $color, $legend);
+
+		return $output;
+	}
+
+	/**
 	 * Generate standard rrd options
 	 * @param array $nodes
 	 * @param array $options
 	 * @param string $plugin
 	 * @return array
 	 */
-	protected function rrdHeader($nodes = array(), $options = array(), $plugin = '') {
+	public function rrdHeader($nodes = array(), $options = array(), $plugin = '') {
 		$rrd = array('-t');
 
 		$label = 'Combined';
@@ -300,6 +369,21 @@ class Yarf extends ApiProducerDetails {
 		}
 
 		return $rrd;
+	}
+
+	/**
+	 * Custom rrd options
+	 * @return array
+	 */
+	public function rrdOptions() {
+		$output = array();
+
+		foreach($this->rrd_options as $key => $value) {
+			$output[] = $key;
+			$output[] = $value;
+		}
+
+		return $output;
 	}
 
 	/**

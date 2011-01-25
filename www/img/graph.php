@@ -72,7 +72,8 @@ if(!empty($errors)) {
 
 $errors = array();
 
-if(!array_key_exists('node', $input) && !array_key_exists('expression', $input)) {
+if(!array_key_exists('node', $input) &&
+		!array_key_exists('expression', $input)) {
 	$errors[] = 'Missing node(s) or expression';
 }
 
@@ -115,14 +116,18 @@ if(empty($nodes)) {
 unset($input['expression']);
 unset($input['node']);
 
-$nodes = array_unique($nodes);
+// See the comments at
+// http://php.net/manual/en/function.array-unique.php
+// as to why this is faster than array_unique()
+$nodes = array_merge(array_flip(array_flip($nodes)));
 
 $exists = array();
-foreach($nodes as $node) {
+while(list($junk, $node) = each($nodes)) {
 	if($api->rrdExists($node, $input)) {
 		$exists[] = $node;
 	}
 }
+reset($nodes);
 
 if(empty($exists)) {
 	$message = 'No nodes for this data set';
@@ -135,10 +140,95 @@ if(empty($exists)) {
 	exit(0);
 }
 
-$options = $api->rrdOptions($exists, $input);
+$rrd = $api->rrdHeader($nodes, $input, $api->getTitle());
+$rrd = array_merge($rrd, $api->rrdOptions());
+
+$combine = array();
+$count = 0;
+
+while(list($junk, $node) = each($nodes)) {
+	$files = $api->rrdFiles($node, $input);
+	if(empty($files)) {
+		continue;
+	}
+
+	$node = str_replace('.', '_', $node);
+
+	$defs = $api->rrdDef($node, $files, $api->getDS());
+	if(empty($defs)) {
+		continue;
+	}
+
+	$rrd = array_merge($rrd, $defs);
+
+	foreach($api->getDS() as $ds => $junk) {
+		if($count == 0) {
+			$combine['avg' . $ds] = sprintf("CDEF:%s=%s%s",
+				$ds, $ds, $node);
+			$combine['max' . $ds] = sprintf("CDEF:max%s=%s%s",
+				$ds, $ds, $node);
+			$combine['min' . $ds] = sprintf("CDEF:min%s=%s%s",
+				$ds, $ds, $node);
+		} else {
+			$combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
+				$ds, $node);
+			$combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
+				$ds, $node);
+			$combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
+				$ds, $node);
+		}
+	}
+
+	$count++;
+}
+reset($nodes);
+
+$rrd = array_merge($rrd, array_values($combine));
+$rrd = array_merge($rrd, $api->rrdDate($input));
+
+foreach($api->getDS() as $ds => $data) {
+	$format = '%4.0lf%s';
+
+	if(array_key_exists('format', $data)) {
+		$format = $data['format'];
+	}
+
+	if($count > 1) {
+		if($api->combinedAverage()) {
+			$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
+				$ds, $ds, $count);
+			$rrd[] = sprintf("CDEF:max%scombined=%s,%s,/",
+				$ds, $ds, $count);
+			$rrd[] = sprintf("CDEF:min%scombined=%s,%s,/",
+				$ds, $ds, $count);
+
+			$ds .= 'combined';
+		}
+	}
+
+	if($data['scale']) {
+		$rrd[] = sprintf("CDEF:%sscaled=%s,%s",
+			$ds, $ds, $data['scale']);
+		$rrd[] = sprintf("CDEF:max%sscaled=max%s,%s",
+			$ds, $ds, $data['scale']);
+		$rrd[] = sprintf("CDEF:min%sscaled=min%s,%s",
+			$ds, $ds, $data['scale']);
+
+		$ds .= 'scaled';
+	}
+
+	$rrd[] = sprintf("VDEF:last%s=%s,LAST", $ds, $ds);
+
+	$rrd = array_merge($rrd, $api->rrdGraph($ds, $data));
+
+	$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %s	\\g", $ds, $format);
+	$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %s	\\g", $ds, $format);
+	$rrd[] = sprintf("GPRINT:max%s:MAX:Max\\: %s	\\g", $ds, $format);
+	$rrd[] = sprintf("GPRINT:last%s:Last\\: %s\\j", $ds, $format);
+}
 
 $out_file = '/tmp/yarf-' . $_SERVER['UNIQUE_ID'] . mt_rand() . mt_rand();
-$return = rrd_graph($out_file, $options, count($options));
+$return = rrd_graph($out_file, $rrd, count($rrd));
 
 if(!is_array($return)) {
 	$error = rrd_error();
@@ -147,7 +237,7 @@ if(!is_array($return)) {
 	}
 
 	$api->sendHeaders();
-	$api->showOutput('500', $error, $options);
+	$api->showOutput('500', $error, $rrd);
 	@unlink($out_file);
 	exit(0);
 }
@@ -155,7 +245,7 @@ if(!is_array($return)) {
 if(array_key_exists('debug', $input)) {
 	if($api->trueFalse($input['debug'], false)) {
 		$api->sendHeaders();
-		$api->showOutput('200', 'OK', $options);
+		$api->showOutput('200', 'OK', $rrd);
 		exit(0);
 	}
 }

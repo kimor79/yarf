@@ -31,30 +31,53 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class YarfGeneric extends Yarf {
 
-	protected $details = array(
-		'combined' => array(
-			'average' => false,
+	protected $datasources = array(
+		'value' => array(
+			'area' => true,
+			'color' => '#3020ee',
+			'legend' => '',
+			'line' => 1,
+			'scale' => '',
 		),
-		'data' => array(
-			'value' => array(
-				'area' => true,
-				'color' => '#3020ee',
-				'legend' => '',
-				'line' => 1,
-				'scale' => '',
-			),
-		),
-		'rrd' => array(
-			'-l' => 0,
-		),
-		'title' => 'Generic Graph',
-		'paths' => array(''),
 	);
+
+	protected $paths = array();
 
 	public function __construct($options = array()) {
 		parent::__construct();
 
-		$this->details = $this->setDetails($this->details, $options);
+		$this->rrd_options['-l'] = 0;
+
+		if(array_key_exists('combined_average', $options)) {
+			$this->combined_average = $options['combined_average'];
+		}
+
+		if(array_key_exists('datasources', $options)) {
+			$this->datasources = $this->setDetails(
+				$this->datasources, $options['datasources']);
+		}
+
+		if(array_key_exists('paths', $options)) {
+			$this->paths = $this->setDetails($this->paths,
+				$options['paths']);
+		}
+
+		if(array_key_exists('rrd', $options)) {
+			$this->rrd_options = $this->setDetails(
+				$this->rrd_options, $options['rrd']);
+		}
+
+		if(array_key_exists('title', $options)) {
+			$this->title = $options['title'];
+		}
+	}
+
+	/**
+	 * Get the datasources
+	 * @return array
+	 */
+	public function getDS() {
+		return $this->datasources;
 	}
 
 	/**
@@ -64,150 +87,7 @@ class YarfGeneric extends Yarf {
 	 * @return array array of files
 	 */
 	public function rrdFiles($node = '', $options = array()) {
-		return parent::rrdFiles($node, $options, $this->details['paths']);
-	}
-
-	/**
-	 * Build the rrd options array
-	 * @param array $nodes
-	 * @param array $options
-	 * @return array
-	 */
-	public function rrdOptions($nodes = array(), $options = array()) {
-		$title = $this->details['title'];
-		if(count($nodes) > 1) {
-			if(array_key_exists('combined', $this->details)) {
-				if(array_key_exists('average', $this->details['combined'])) {
-					if($this->details['combined']['average']) {
-						$title .= ' (Avg)';
-					}
-				}
-			}
-		}
-
-		$rrd = $this->rrdHeader($nodes, $options, $title);
-
-		if(array_key_exists('rrd', $this->details)) {
-			foreach($this->details['rrd'] as $key => $value) {
-				if(!is_null($value)) {
-					$rrd[] = $key;
-
-					if($value !== '') {
-						$rrd[] = $value;
-					}
-				}
-			}
-		}
-
-		$combine = array();
-		$count = 0;
-
-		foreach($nodes as $node) {
-			$files = $this->rrdFiles($node, $options);
-
-			if(empty($files)) {
-				continue;
-			}
-
-			$node = str_replace('.', '_', $node);
-
-			$t_rrd = $this->rrdDef($node, $files, array_keys($this->details['data']));
-
-			if(empty($t_rrd)) {
-				continue;
-			}
-
-			$rrd = array_merge($rrd, $t_rrd);
-
-			foreach($this->details['data'] as $ds => $data) {
-				if($count == 0) {
-					$combine['avg' . $ds] = sprintf("CDEF:%s=%s%s",
-						$ds, $ds, $node);
-					$combine['min' . $ds] = sprintf("CDEF:min%s=min%s%s",
-						$ds, $ds, $node);
-					$combine['max' . $ds] = sprintf("CDEF:max%s=max%s%s",
-						$ds, $ds, $node);
-				} else {
-					$combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
-						$ds, $node);
-					$combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
-						$ds, $node);
-					$combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
-						$ds, $node);
-				}
-			}
-
-			$count++;
-		}
-
-		$rrd = array_merge($rrd, array_values($combine));
-		$rrd = array_merge($rrd, $this->rrdDate($options));
-
-		foreach($this->details['data'] as $o_ds => $data) {
-			$ds = $o_ds;
-			$format = '%4.0lf%s';
-
-			if(array_key_exists('format', $data)) {
-				$format = $data['format'];
-			}
-
-			if($count > 1) {
-				if(array_key_exists('combined', $this->details)) {
-					if(array_key_exists('average', $this->details['combined'])) {
-						if($this->details['combined']['average']) {
-							$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
-								$ds, $ds, count($nodes));
-							$rrd[] = sprintf("CDEF:min%scombined=min%s,%s,/",
-								$ds, $ds, count($nodes));
-							$rrd[] = sprintf("CDEF:max%scombined=max%s,%s,/",
-								$ds, $ds, count($nodes));
-
-							$ds .= 'combined';
-						}
-					}
-				}
-			}
-
-			if($data['scale']) {
-				$rrd[] = sprintf("CDEF:%sscaled=%s,%s",
-					$ds, $ds, $data['scale']);
-				$rrd[] = sprintf("CDEF:min%sscaled=min%s,%s",
-					$ds, $ds, $data['scale']);
-				$rrd[] = sprintf("CDEF:max%sscaled=max%s,%s",
-					$ds, $ds, $data['scale']);
-
-				$ds .= 'scaled';
-			}
-
-			$rrd[] = sprintf("VDEF:last%s=%s,LAST",
-				$ds, $ds);
-
-			if($data['area']) {
-				$rrd[] = sprintf("AREA:%s%s",
-					$ds, $data['color']);
-			}
-
-			if(array_key_exists('line', $data)) {
-				if(ctype_digit((string) $data['line'])) {
-					$rrd[] = sprintf("LINE%s:%s%s:%s",
-						$data['line'], $ds, $data['color'], $data['legend']);
-				}
-			} else {
-				$rrd[] = sprintf("LINE1:%s%s:%s",
-					$ds, $data['color'], $data['legend']);
-			}
-
-			$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %s	\\g",
-				$ds, $format);
-			$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %s	\\g",
-				$ds, $format);
-			$rrd[] = sprintf("GPRINT:max%s:MAX:Max\\: %s	\\g",
-				$ds, $format);
-			$rrd[] = sprintf("GPRINT:last%s:Last\\: %s\\j",
-				$ds, $format);
-		}
-
-		return $rrd;
+		return parent::rrdFiles($node, $options, $this->paths);
 	}
 
 	/**

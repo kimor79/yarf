@@ -35,7 +35,7 @@ $builtin_data_types = array(
 	'Disk IO Bytes (All)' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
-			'data' => array(
+			'datasources' => array(
 				'read' => array(
 					'color' => '#3020EE',
 					'format' => '%7.2lf%s',
@@ -62,10 +62,8 @@ $builtin_data_types = array(
 	'load' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
-			'combined' => array(
-				'average' => true,
-			),
-			'data' => array(
+			'combined_average' => true,
+			'datasources' => array(
 				'shortterm' => array(
 					'color' => '#ff0000',
 					'legend' => '1minute',
@@ -100,10 +98,8 @@ $builtin_data_types = array(
 	'temperature' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
-			'combined' => array(
-				'average' => true,
-			),
-			'data' => array(
+			'combined_average' => true,
+			'datasources' => array(
 				'value' => array(
 					'scale' => '9,*,5,/,32,+'
 				),
@@ -123,10 +119,8 @@ $builtin_data_types = array(
 	'uptime' => array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
-			'combined' => array(
-				'average' => true,
-			),
-			'data' => array(
+			'combined_average' => true,
+			'datasources' => array(
 				'value' => array(
 					'scale' => '86400,/',
 				),
@@ -139,7 +133,6 @@ $builtin_data_types = array(
 				'-v' => 'Days',
 			),
 			'title' => 'Uptime',
-			'vertical_label' => 'Days',
 		),
 		'file' => 'generic',
 	),
