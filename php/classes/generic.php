@@ -84,10 +84,11 @@ class YarfGeneric extends Yarf {
 	 * Get the rrd files
 	 * @param string $node
 	 * @param array $options
+	 * @param bool $first stop on first match
 	 * @return array array of files
 	 */
-	public function rrdFiles($node = '', $options = array()) {
-		return parent::rrdFiles($node, $options, $this->paths);
+	public function rrdFiles($node = '', $options = array(), $first = false) {
+		return parent::rrdFiles($node, $options, $this->paths, $first);
 	}
 
 	/**

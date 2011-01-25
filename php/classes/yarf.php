@@ -233,7 +233,7 @@ class Yarf extends ApiProducerDetails {
 	 * @return bool
 	 */
 	public function rrdExists($node = '', $options = array()) {
-		$glob = $this->rrdFiles($node, $options);
+		$glob = $this->rrdFiles($node, $options, true);
 
 		if(!empty($glob)) {
 			return true;
@@ -247,9 +247,10 @@ class Yarf extends ApiProducerDetails {
 	 * @param string $node
 	 * @param array $options
 	 * @param array file name patterns
+	 * @param bool stop on first match
 	 * @return array
 	 */
-	public function rrdFiles($node, $options, $globs) {
+	protected function rrdFiles($node, $options, $globs, $first) {
 		$files = array();
 		$search = $this->base_paths;
 
@@ -267,6 +268,10 @@ class Yarf extends ApiProducerDetails {
 
 				$list = glob($full, GLOB_NOSORT|GLOB_BRACE);
 				if(!empty($list)) {
+					if($first) {
+						return $list;
+					}
+
 					$files = array_merge($list);
 				}
 			}
