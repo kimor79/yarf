@@ -39,7 +39,7 @@ $builtin_data_types = array(
 				'read' => array(
 					'color' => '#3020EE',
 					'format' => '%7.2lf%s',
-					'legend' => 'Reads',
+					'legend' => 'Reads ',
 				),
 				'write' => array(
 					'color' => '#00FF00',
@@ -66,11 +66,11 @@ $builtin_data_types = array(
 			'datasources' => array(
 				'shortterm' => array(
 					'color' => '#ff0000',
-					'legend' => '1minute',
+					'legend' => '1minute ',
 				),
 				'midterm' => array(
 					'color' => '#00ff00',
-					'legend' => '5minute',
+					'legend' => '5minute ',
 					'line' => 2,
 				),
 				'longterm' => array(
