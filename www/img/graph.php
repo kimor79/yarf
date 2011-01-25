@@ -97,17 +97,17 @@ if(!empty($errors)) {
 
 $input = $api->sanitizeInput($input, $api->sanitize);
 
-$nodes = array();
+$entries = array();
 
 if(array_key_exists('expression', $input)) {
-	$nodes = $api->parseNodes($input['expression']);
+	$entries = $api->parseNodes($input['expression']);
 }
 
 if(array_key_exists('node', $input)) {
-	$nodes = array_merge($nodes, $input['node']);
+	$entries = array_merge($nodes, $input['node']);
 }
 
-if(empty($nodes)) {
+if(empty($entries)) {
 	$api->sendHeaders();
 	$api->showOutput('400', 'No nodes to graph');
 	exit(0);
@@ -119,17 +119,17 @@ unset($input['node']);
 // See the comments at
 // http://php.net/manual/en/function.array-unique.php
 // as to why this is faster than array_unique()
-$nodes = array_merge(array_flip(array_flip($nodes)));
+$entries = array_merge(array_flip(array_flip($entries)));
 
-$exists = array();
-while(list($junk, $node) = each($nodes)) {
+$nodes = array();
+while(list($junk, $node) = each($entries)) {
 	if($api->rrdExists($node, $input)) {
-		$exists[] = $node;
+		$nodes[] = $node;
 	}
 }
 reset($nodes);
 
-if(empty($exists)) {
+if(empty($nodes)) {
 	$message = 'No nodes for this data set';
 	if(count($nodes) == 1) {
 		$message = 'No graph for ' . $nodes[0];
