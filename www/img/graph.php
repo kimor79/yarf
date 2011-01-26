@@ -206,6 +206,11 @@ $rrd = array_merge($rrd, array_values($combine));
 $rrd = array_merge($rrd, $api->rrdDate());
 
 foreach($api->getDS() as $key => $values) {
+	foreach($values as $ds => $data) {
+		if(!is_array($data)) {
+			continue;
+		}
+
 		$ds = $key . $ds;
 		$format = '%4.0lf%s';
 
