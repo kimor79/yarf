@@ -32,8 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $desired_graphs = array(
 	0 => false, // So the key numbers align with graph labels
 );
-if(array_key_exists('graph', $req)) {
-	foreach($req['graph'] as $graph_string) {
+if(array_key_exists('graph', $request)) {
+	foreach($request['graph'] as $graph_string) {
 		parse_str($graph_string, $desired_graphs[]);
 	}
 }

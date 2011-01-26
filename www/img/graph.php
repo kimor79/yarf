@@ -33,23 +33,23 @@ $default_format = 'png';
 
 require_once('yarf/includes/init.php');
 
-if(!array_key_exists('data', $req)) {
+if(!array_key_exists('data', $request)) {
 	$yarf->sendHeaders();
 	$yarf->showOutput('400', 'Missing data');
 	exit(0);
 }
 
-if(!array_key_exists($req['data'], $data_types)) {
+if(!array_key_exists($request['data'], $data_types)) {
 	$yarf->sendHeaders();
 	$yarf->showOutput('400', 'No such data type');
 	exit(0);
 }
 
-$data_type = $data_types[$req['data']];
+$data_type = $data_types[$request['data']];
 
 require_once('yarf/classes/' . $data_type['file'] . '.php');
 
-unset($req['data']);
+unset($request['data']);
 
 $class = $data_type['class'];
 
@@ -59,8 +59,8 @@ if(array_key_exists('class_options', $data_type)) {
 	$api = new $class();
 }
 
-$api->setParameters($req, array('outputFormat' => $default_format));
-$input = $api->setInput($req);
+$api->setParameters($request, array('outputFormat' => $default_format));
+$input = $api->setInput($request);
 
 $errors = $api->validateInput($input, $api->required, $api->optional);
 

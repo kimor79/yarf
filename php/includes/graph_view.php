@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ?>
 
 <?php
-if(empty($req)) {
+if(empty($request)) {
 	echo 'Please select up to 4 graphs from the form above';
 	return;
 }
@@ -43,7 +43,7 @@ $row_included = array();
 $row_nodes = array();
 $int = 0;
 
-foreach($req['graph'] as $query) {
+foreach($request['graph'] as $query) {
 	parse_str($query, $graph);
 
 	if(!array_key_exists($graph['data'], $data_types)) {
@@ -52,7 +52,7 @@ foreach($req['graph'] as $query) {
 
 	$row_combined[$int] = $query;
 
-	$nodes = $yarf->parseNodes($req['expression']);
+	$nodes = $yarf->parseNodes($request['expression']);
 
 	// file exists for $data_type
 	$row_included[$int] = array(
@@ -75,7 +75,7 @@ foreach($req['graph'] as $query) {
 <?php
 $int = 0;
 foreach($row_combined as $row) {
-	$row_images['c' . $int] = 'img/graph.php?expression=' . urlencode($req['expression']) . '&' . $row;
+	$row_images['c' . $int] = 'img/graph.php?expression=' . urlencode($request['expression']) . '&' . $row;
 	echo '  <td><img id="graphc' . $int . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
 	$int++;
 }

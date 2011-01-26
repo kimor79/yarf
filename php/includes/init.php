@@ -79,7 +79,7 @@ require_once('yarf/classes/yarf.php');
 require_once('yarf/includes/data_types.php');
 
 $yarf = new Yarf();
-$req = array_merge($_GET, $_POST);
+$request = array_merge($_GET, $_POST);
 
 $time_units = array(
 	'hours',
@@ -93,7 +93,7 @@ if(!isset($default_format)) {
 	$default_format = 'png';
 }
 
-$yarf->setParameters($req, array('outputFormat' => $default_format));
+$yarf->setParameters($request, array('outputFormat' => $default_format));
 
 if(get_config('nodes', 'use_nodegroups')) {
 	require_once('nodegroups_client/classes/client.php');
