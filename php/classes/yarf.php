@@ -47,6 +47,7 @@ class Yarf extends ApiProducerDetails {
 	);
 
 
+	protected $request = array();
 	public $required = array();
 	protected $rrd_options = array();
 
@@ -154,14 +155,13 @@ class Yarf extends ApiProducerDetails {
 
 	/**
 	 * Generate the date (which may be an archive date)
-	 * @param array $options
 	 * @return array
 	 */
-	public function rrdDate($options = array()) {
+	public function rrdDate() {
 		$date = date('r');
 
-		if(array_key_exists('archive', $options)) {
-			$file = $this->findArchive($options['archive']) . '/timestamp';
+		if(array_key_exists('archive', $this->request)) {
+			$file = $this->findArchive($this->request['archive']) . '/timestamp';
 			if(is_file($file)) {
 				$time = file_get_contents($file);
 				$time = trim($time);
@@ -229,11 +229,10 @@ class Yarf extends ApiProducerDetails {
 	/**
 	 * Verify if rrd files exist for node
 	 * @param string $node
-	 * @param array $options
 	 * @return bool
 	 */
-	public function rrdExists($node = '', $options = array()) {
-		$glob = $this->rrdFiles($node, $options, true);
+	public function rrdExists($node = '') {
+		$glob = $this->rrdFiles($node, true);
 
 		if(!empty($glob)) {
 			return true;
@@ -245,17 +244,16 @@ class Yarf extends ApiProducerDetails {
 	/**
 	 * Get rrd files
 	 * @param string $node
-	 * @param array $options
 	 * @param array file name patterns
 	 * @param bool stop on first match
 	 * @return array
 	 */
-	protected function rrdFiles($node, $options, $globs, $first) {
+	protected function rrdFiles($node, $globs, $first) {
 		$files = array();
 		$search = $this->base_paths;
 
-		if(array_key_exists('archive', $options)) {
-			$archive = $this->findArchive($options['archive']);
+		if(array_key_exists('archive', $this->request)) {
+			$archive = $this->findArchive($this->request['archive']);
 			if($archive) {
 				$search = array($archive);
 			}
@@ -319,11 +317,10 @@ class Yarf extends ApiProducerDetails {
 	/**
 	 * Generate standard rrd options
 	 * @param array $nodes
-	 * @param array $options
 	 * @param string $plugin
 	 * @return array
 	 */
-	public function rrdHeader($nodes = array(), $options = array(), $plugin = '') {
+	public function rrdHeader($nodes = array(), $plugin = '') {
 		$rrd = array('-t');
 
 		$label = 'Combined';
@@ -339,10 +336,10 @@ class Yarf extends ApiProducerDetails {
 
 		$label .= ': ' . $plugin;
 
-		if(array_key_exists('archive', $options)) {
-			$label .= ' - ' . $options['archive'];
+		if(array_key_exists('archive', $this->request)) {
+			$label .= ' - ' . $this->request['archive'];
 
-			$file = $this->findArchive($options['archive']) . '/timestamp';
+			$file = $this->findArchive($this->request['archive']) . '/timestamp';
 			if(is_file($file)) {
 				$time = file_get_contents($file);
 				$time = trim($time);
@@ -356,16 +353,16 @@ class Yarf extends ApiProducerDetails {
 
 		$time = '';
 
-		if(array_key_exists('t_val', $options)) {
-			$time = $options['t_val'];
+		if(array_key_exists('t_val', $this->request)) {
+			$time = $this->request['t_val'];
 		}
 
-		if(array_key_exists('t_unit', $options)) {
+		if(array_key_exists('t_unit', $this->request)) {
 			if(empty($time)) {
 				$time = 1;
 			}
 
-			$time .= $options['t_unit'];
+			$time .= $this->request['t_unit'];
 		}
 
 		if(!empty($time)) {
