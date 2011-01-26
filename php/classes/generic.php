@@ -41,8 +41,6 @@ class YarfGeneric extends Yarf {
 		),
 	);
 
-	protected $paths = array();
-
 	public function __construct($options = array()) {
 		parent::__construct();
 
@@ -78,17 +76,6 @@ class YarfGeneric extends Yarf {
 	 */
 	public function getDS() {
 		return $this->datasources;
-	}
-
-	/**
-	 * Get the rrd files
-	 * @param string $node
-	 * @param array $options
-	 * @param bool $first stop on first match
-	 * @return array array of files
-	 */
-	public function rrdFiles($node = '', $options = array(), $first = false) {
-		return parent::rrdFiles($node, $options, $this->paths, $first);
 	}
 
 	/**
