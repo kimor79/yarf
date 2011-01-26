@@ -46,7 +46,7 @@ class Yarf extends ApiProducerDetails {
 		't_val' => 'digit',
 	);
 
-
+	protected $paths = array();
 	protected $request = array();
 	public $required = array();
 	protected $rrd_options = array();
@@ -232,7 +232,7 @@ class Yarf extends ApiProducerDetails {
 	 * @return bool
 	 */
 	public function rrdExists($node = '') {
-		$glob = $this->rrdFiles($node, true);
+		$glob = $this->rrdFiles($node, array('first' => true));
 
 		if(!empty($glob)) {
 			return true;
@@ -244,11 +244,10 @@ class Yarf extends ApiProducerDetails {
 	/**
 	 * Get rrd files
 	 * @param string $node
-	 * @param array file name patterns
-	 * @param bool stop on first match
+	 * @param array $options
 	 * @return array
 	 */
-	protected function rrdFiles($node, $globs, $first) {
+	protected function rrdFiles($node, $options) {
 		$files = array();
 		$search = $this->base_paths;
 
@@ -260,13 +259,13 @@ class Yarf extends ApiProducerDetails {
 		}
 
 		foreach($search as $path) {
-			foreach($globs as $glob) {
+			foreach($this->paths as $glob) {
 				$full = sprintf("%s/%s/%s.rrd",
 					$path, $node, $glob);
 
 				$list = glob($full, GLOB_NOSORT|GLOB_BRACE);
 				if(!empty($list)) {
-					if($first) {
+					if($options['first']) {
 						return $list;
 					}
 
