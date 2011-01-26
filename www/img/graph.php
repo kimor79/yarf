@@ -142,7 +142,7 @@ if(empty($nodes)) {
 	exit(0);
 }
 
-$rrd = $api->rrdHeader($nodes, $api->getTitle());
+$rrd = $api->rrdHeader($nodes, $api->getTitle(count($nodes)));
 $rrd = array_merge($rrd, $api->rrdOptions());
 
 $combine = array();
@@ -206,7 +206,6 @@ $rrd = array_merge($rrd, array_values($combine));
 $rrd = array_merge($rrd, $api->rrdDate());
 
 foreach($api->getDS() as $key => $values) {
-	foreach($values as $ds => $data) {
 		$ds = $key . $ds;
 		$format = '%4.0lf%s';
 

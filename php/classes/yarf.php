@@ -109,13 +109,16 @@ class Yarf extends ApiProducerDetails {
 
 	/**
 	 * Get the title
+	 * @param int $count
 	 * @return string
 	 */
-	public function getTitle() {
+	public function getTitle($count = 0) {
 		$title = $this->title;
 
 		if($this->combinedAverage()) {
-			$title .= ' (Avg)';
+			if($count > 1) {
+				$title .= ' (Avg)';
+			}
 		}
 
 		return $title;
