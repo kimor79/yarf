@@ -47,7 +47,7 @@ class Yarf extends ApiProducerDetails {
 	);
 
 	protected $paths = array();
-	protected $request = array();
+	public $request = array();
 	public $required = array();
 	protected $rrd_options = array();
 
@@ -247,7 +247,7 @@ class Yarf extends ApiProducerDetails {
 	 * @param array $options
 	 * @return array
 	 */
-	protected function rrdFiles($node, $options) {
+	public function rrdFiles($node, $options) {
 		$files = array();
 		$search = $this->base_paths;
 
