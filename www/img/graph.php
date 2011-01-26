@@ -116,6 +116,8 @@ if(empty($entries)) {
 unset($input['expression']);
 unset($input['node']);
 
+$api->request = $input;
+
 // See the comments at
 // http://php.net/manual/en/function.array-unique.php
 // as to why this is faster than array_unique()
@@ -123,7 +125,7 @@ $entries = array_merge(array_flip(array_flip($entries)));
 
 $nodes = array();
 while(list($junk, $node) = each($entries)) {
-	if($api->rrdExists($node, $input)) {
+	if($api->rrdExists($node)) {
 		$nodes[] = $node;
 	}
 }
@@ -140,14 +142,14 @@ if(empty($nodes)) {
 	exit(0);
 }
 
-$rrd = $api->rrdHeader($nodes, $input, $api->getTitle());
+$rrd = $api->rrdHeader($nodes, $api->getTitle());
 $rrd = array_merge($rrd, $api->rrdOptions());
 
 $combine = array();
 $count = 0;
 
 while(list($junk, $node) = each($nodes)) {
-	$files = $api->rrdFiles($node, $input);
+	$files = $api->rrdFiles($node);
 	if(empty($files)) {
 		continue;
 	}
@@ -184,7 +186,7 @@ while(list($junk, $node) = each($nodes)) {
 reset($nodes);
 
 $rrd = array_merge($rrd, array_values($combine));
-$rrd = array_merge($rrd, $api->rrdDate($input));
+$rrd = array_merge($rrd, $api->rrdDate());
 
 foreach($api->getDS() as $ds => $data) {
 	$format = '%4.0lf%s';
