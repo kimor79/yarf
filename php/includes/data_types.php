@@ -36,17 +36,19 @@ $builtin_data_types = array(
 		'class' => 'YarfGeneric',
 		'class_options' => array(
 			'datasources' => array(
-				'read' => array(
-					'color' => '#3020EE',
-					'format' => '%7.2lf%s',
-					'legend' => 'Reads ',
+				array(
+					'read' => array(
+						'color' => '#3020EE',
+						'format' => '%7.2lf%s',
+						'legend' => 'Reads ',
+					),
+					'write' => array(
+						'color' => '#00FF00',
+						'format' => '%7.2lf%s',
+						'legend' => 'Writes',
+					),
+					'value' => NULL,
 				),
-				'write' => array(
-					'color' => '#00FF00',
-					'format' => '%7.2lf%s',
-					'legend' => 'Writes',
-				),
-				'value' => NULL,
 			),
 			'paths' => array(
 				'disk-*/disk_octets',
@@ -64,22 +66,24 @@ $builtin_data_types = array(
 		'class_options' => array(
 			'combined_average' => true,
 			'datasources' => array(
-				'shortterm' => array(
-					'color' => '#ff0000',
-					'legend' => '1minute ',
+				array(
+					'shortterm' => array(
+						'color' => '#ff0000',
+						'legend' => '1minute ',
+					),
+					'midterm' => array(
+						'color' => '#00ff00',
+						'legend' => '5minute ',
+						'line' => 2,
+					),
+					'longterm' => array(
+						'area' => true,
+						'color' => '#3020ee',
+						'legend' => '15minute',
+						'line' => 0,
+					),
+					'value' => NULL,
 				),
-				'midterm' => array(
-					'color' => '#00ff00',
-					'legend' => '5minute ',
-					'line' => 2,
-				),
-				'longterm' => array(
-					'area' => true,
-					'color' => '#3020ee',
-					'legend' => '15minute',
-					'line' => 0,
-				),
-				'value' => NULL,
 			),
 			'paths' => array(
 				'load/load',
@@ -100,8 +104,10 @@ $builtin_data_types = array(
 		'class_options' => array(
 			'combined_average' => true,
 			'datasources' => array(
-				'value' => array(
-					'scale' => '9,*,5,/,32,+'
+				array(
+					'value' => array(
+						'scale' => '9,*,5,/,32,+'
+					),
 				),
 			),
 			'paths' => array(
@@ -121,8 +127,10 @@ $builtin_data_types = array(
 		'class_options' => array(
 			'combined_average' => true,
 			'datasources' => array(
-				'value' => array(
-					'scale' => '86400,/',
+				array(
+					'value' => array(
+						'scale' => '86400,/',
+					),
 				),
 			),
 			'paths' => array(

@@ -258,10 +258,15 @@ class Yarf extends ApiProducerDetails {
 			}
 		}
 
+		$ext = '';
+		if(array_key_exists('ext', $options)) {
+			$ext = $options['ext'];
+		}
+
 		foreach($search as $path) {
 			foreach($this->paths as $glob) {
-				$full = sprintf("%s/%s/%s.rrd",
-					$path, $node, $glob);
+				$full = sprintf("%s/%s/%s%s.rrd",
+					$path, $node, $glob, $ext);
 
 				$list = glob($full, GLOB_NOSORT|GLOB_BRACE);
 				if(!empty($list)) {

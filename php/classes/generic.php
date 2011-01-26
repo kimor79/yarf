@@ -32,12 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class YarfGeneric extends Yarf {
 
 	protected $datasources = array(
-		'value' => array(
-			'area' => true,
-			'color' => '#3020ee',
-			'legend' => '',
-			'line' => 1,
-			'scale' => '',
+		array(
+			'value' => array(
+				'area' => true,
+				'color' => '#3020ee',
+				'legend' => '',
+				'line' => 1,
+				'scale' => '',
+			),
 		),
 	);
 

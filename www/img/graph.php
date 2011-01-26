@@ -149,35 +149,52 @@ $combine = array();
 $count = 0;
 
 while(list($junk, $node) = each($nodes)) {
-	$files = $api->rrdFiles($node);
-	if(empty($files)) {
-		continue;
-	}
-
+	$r_node = $node;
 	$node = str_replace('.', '_', $node);
 
-	$defs = $api->rrdDef($node, $files, $api->getDS());
-	if(empty($defs)) {
-		continue;
-	}
+	foreach($api->getDS() as $key => $data) {
+		$file_data = array();
 
-	$rrd = array_merge($rrd, $defs);
+		if(!is_int($key)) {
+			$file_data['ext'] = $key;
+		}
 
-	foreach($api->getDS() as $ds => $junk) {
-		if($count == 0) {
-			$combine['avg' . $ds] = sprintf("CDEF:%s=%s%s",
-				$ds, $ds, $node);
-			$combine['max' . $ds] = sprintf("CDEF:max%s=%s%s",
-				$ds, $ds, $node);
-			$combine['min' . $ds] = sprintf("CDEF:min%s=%s%s",
-				$ds, $ds, $node);
-		} else {
-			$combine['avg' . $ds] .= sprintf(",%s%s,ADDNAN",
-				$ds, $node);
-			$combine['max' . $ds] .= sprintf(",max%s%s,ADDNAN",
-				$ds, $node);
-			$combine['min' . $ds] .= sprintf(",min%s%s,ADDNAN",
-				$ds, $node);
+		$files = $api->rrdFiles($r_node, $file_data);
+		if(empty($files)) {
+			continue;
+		}
+
+		$defs = $api->rrdDef($node, $files, $data, $key);
+		if(empty($defs)) {
+			continue;
+		}
+
+		$rrd = array_merge($rrd, $defs);
+
+		foreach($data as $ds => $junk) {
+			$ds = $key . $ds;
+
+			if($count == 0) {
+				$combine['avg' . $ds] =
+					sprintf("CDEF:%s=%s%s",
+					$ds, $ds, $node);
+				$combine['max' . $ds] =
+					sprintf("CDEF:max%s=%s%s",
+					$ds, $ds, $node);
+				$combine['min' . $ds] =
+					sprintf("CDEF:min%s=%s%s",
+					$ds, $ds, $node);
+			} else {
+				$combine['avg' . $ds] .=
+					sprintf(",%s%s,ADDNAN",
+					$ds, $node);
+				$combine['max' . $ds] .=
+					sprintf(",max%s%s,ADDNAN",
+					$ds, $node);
+				$combine['min' . $ds] .=
+					sprintf(",min%s%s,ADDNAN",
+					$ds, $node);
+			}
 		}
 	}
 
@@ -188,45 +205,52 @@ reset($nodes);
 $rrd = array_merge($rrd, array_values($combine));
 $rrd = array_merge($rrd, $api->rrdDate());
 
-foreach($api->getDS() as $ds => $data) {
-	$format = '%4.0lf%s';
+foreach($api->getDS() as $key => $values) {
+	foreach($values as $ds => $data) {
+		$ds = $key . $ds;
+		$format = '%4.0lf%s';
 
-	if(array_key_exists('format', $data)) {
-		$format = $data['format'];
-	}
-
-	if($count > 1) {
-		if($api->combinedAverage()) {
-			$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
-				$ds, $ds, $count);
-			$rrd[] = sprintf("CDEF:max%scombined=%s,%s,/",
-				$ds, $ds, $count);
-			$rrd[] = sprintf("CDEF:min%scombined=%s,%s,/",
-				$ds, $ds, $count);
-
-			$ds .= 'combined';
+		if(array_key_exists('format', $data)) {
+			$format = $data['format'];
 		}
+
+		if($count > 1) {
+			if($api->combinedAverage()) {
+				$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
+					$ds, $ds, $count);
+				$rrd[] = sprintf("CDEF:max%scombined=%s,%s,/",
+					$ds, $ds, $count);
+				$rrd[] = sprintf("CDEF:min%scombined=%s,%s,/",
+					$ds, $ds, $count);
+
+				$ds .= 'combined';
+			}
+		}
+
+		if($data['scale']) {
+			$rrd[] = sprintf("CDEF:%sscaled=%s,%s",
+				$ds, $ds, $data['scale']);
+			$rrd[] = sprintf("CDEF:max%sscaled=max%s,%s",
+				$ds, $ds, $data['scale']);
+			$rrd[] = sprintf("CDEF:min%sscaled=min%s,%s",
+				$ds, $ds, $data['scale']);
+
+			$ds .= 'scaled';
+		}
+
+		$rrd[] = sprintf("VDEF:last%s=%s,LAST", $ds, $ds);
+
+		$rrd = array_merge($rrd, $api->rrdGraph($ds, $data));
+
+		$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %s	\\g",
+			$ds, $format);
+		$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %s	\\g",
+			$ds, $format);
+		$rrd[] = sprintf("GPRINT:max%s:MAX:Max\\: %s	\\g",
+			$ds, $format);
+		$rrd[] = sprintf("GPRINT:last%s:Last\\: %s\\j",
+			$ds, $format);
 	}
-
-	if($data['scale']) {
-		$rrd[] = sprintf("CDEF:%sscaled=%s,%s",
-			$ds, $ds, $data['scale']);
-		$rrd[] = sprintf("CDEF:max%sscaled=max%s,%s",
-			$ds, $ds, $data['scale']);
-		$rrd[] = sprintf("CDEF:min%sscaled=min%s,%s",
-			$ds, $ds, $data['scale']);
-
-		$ds .= 'scaled';
-	}
-
-	$rrd[] = sprintf("VDEF:last%s=%s,LAST", $ds, $ds);
-
-	$rrd = array_merge($rrd, $api->rrdGraph($ds, $data));
-
-	$rrd[] = sprintf("GPRINT:min%s:MIN:Min\\: %s	\\g", $ds, $format);
-	$rrd[] = sprintf("GPRINT:%s:AVERAGE:Avg\\: %s	\\g", $ds, $format);
-	$rrd[] = sprintf("GPRINT:max%s:MAX:Max\\: %s	\\g", $ds, $format);
-	$rrd[] = sprintf("GPRINT:last%s:Last\\: %s\\j", $ds, $format);
 }
 
 $out_file = '/tmp/yarf-' . $_SERVER['UNIQUE_ID'] . mt_rand() . mt_rand();
