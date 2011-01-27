@@ -46,17 +46,19 @@ if(!array_key_exists($request['data'], $data_types)) {
 }
 
 $data_type = $data_types[$request['data']];
-
-require_once('yarf/classes/' . $data_type['file'] . '.php');
-
 unset($request['data']);
 
-$class = $data_type['class'];
+if(array_key_exists('class', $data_type)) {
+	require_once('yarf/classes/' . $data_type['class']['file'] . '.php');
+	$class = $data_type['class']['name'];
+} else {
+	$class = 'Yarf';
+}
 
 if(array_key_exists('class_options', $data_type)) {
 	$api = new $class($data_type['class_options']);
 } else {
-	$api = new $class();
+	$api = $class;
 }
 
 $api->setParameters($request, array('outputFormat' => $default_format));
@@ -179,10 +181,10 @@ while(list($junk, $node) = each($nodes)) {
 					sprintf("CDEF:%s=%s%s",
 					$ds, $ds, $node);
 				$combine['max' . $ds] =
-					sprintf("CDEF:max%s=%s%s",
+					sprintf("CDEF:max%s=max%s%s",
 					$ds, $ds, $node);
 				$combine['min' . $ds] =
-					sprintf("CDEF:min%s=%s%s",
+					sprintf("CDEF:min%s=min%s%s",
 					$ds, $ds, $node);
 			} else {
 				$combine['avg' . $ds] .=
@@ -219,7 +221,7 @@ foreach($api->getDS() as $key => $values) {
 		}
 
 		if($count > 1) {
-			if($api->combinedAverage()) {
+			if($api->getConfig('combined_average')) {
 				$rrd[] = sprintf("CDEF:%scombined=%s,%s,/",
 					$ds, $ds, $count);
 				$rrd[] = sprintf("CDEF:max%scombined=%s,%s,/",

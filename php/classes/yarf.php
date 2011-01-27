@@ -35,7 +35,19 @@ class Yarf extends ApiProducerDetails {
 
 	private $archive_path = '';
 	protected $base_paths = array();
-	protected $combined_average = false;
+	protected $config = array();
+
+	protected $datasources = array(
+		array(
+			'value' => array(
+				'area' => true,
+				'color' => '#3020ee',
+				'legend' => '',
+				'line' => 1,
+				'scale' => '',
+			),
+		),
+	);
 
 	public $optional = array(
 		'archive' => 'archive',
@@ -58,7 +70,7 @@ class Yarf extends ApiProducerDetails {
 	protected $title = 'Generic Graph';
 	private $trim_domain = false;
 
-	public function __construct() {
+	public function __construct($options = array()) {
 		parent::__construct();
 
 		$this->output_formats[] = 'png';
@@ -67,14 +79,30 @@ class Yarf extends ApiProducerDetails {
 
 		$this->base_paths = explode(PATH_SEPARATOR, get_config('rrd_paths'));
 		$this->trim_domain = get_config('trim_domain');
-	}
 
-	/**
-	 * Whether to average combined graph
-	 * @return bool
-	 */
-	public function combinedAverage() {
-		return $this->trueFalse($this->combined_average, false);
+		if(array_key_exists('config', $options)) {
+			$this->config = $this->setDetails(
+				$this->config, $options['config']);
+		}
+
+		if(array_key_exists('datasources', $options)) {
+			$this->datasources = $this->setDetails(
+				$this->datasources, $options['datasources']);
+		}
+
+		if(array_key_exists('paths', $options)) {
+			$this->paths = $this->setDetails($this->paths,
+				$options['paths']);
+		}
+
+		if(array_key_exists('rrd', $options)) {
+			$this->rrd_options = $this->setDetails(
+				$this->rrd_options, $options['rrd']);
+		}
+
+		if(array_key_exists('title', $options)) {
+			$this->title = $options['title'];
+		}
 	}
 
 	/**
@@ -100,11 +128,24 @@ class Yarf extends ApiProducerDetails {
 	}
 
 	/**
+	 * Get a config option
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function getConfig($key = '') {
+		if(array_key_exists($key, $this->config)) {
+			return $this->config[$key];
+		}
+
+		return NULL;
+	}
+
+	/**
 	 * Get the datasources
 	 * @return array
 	 */
 	public function getDS() {
-		return array();
+		return $this->datasources;
 	}
 
 	/**
@@ -115,7 +156,7 @@ class Yarf extends ApiProducerDetails {
 	public function getTitle($count = 0) {
 		$title = $this->title;
 
-		if($this->combinedAverage()) {
+		if($this->getConfig('combined_average')) {
 			if($count > 1) {
 				$title .= ' (Avg)';
 			}
@@ -311,8 +352,13 @@ class Yarf extends ApiProducerDetails {
 			}
 		}
 
-		if(array_key_exists('area', $data)) {
-			$output[] = sprintf("AREA:%s%s", $ds, $color);
+		if($data['area']) {
+			$stack = '';
+			if($data['area'] === 'stack') {
+				$stack = '::STACK';
+			}
+
+			$output[] = sprintf("AREA:%s%s%s", $ds, $color, $stack);
 		}
 
 		$output[] = sprintf("LINE%s:%s%s:%s",
@@ -393,6 +439,42 @@ class Yarf extends ApiProducerDetails {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * set $details with overrides
+	 * @param array $defaults
+	 * @param array $overrides
+	 * @return array
+	 */
+	public function setDetails($defaults = array(), $overrides = array()) {
+		$details = $defaults;
+
+		foreach(array_merge($overrides, $defaults) as $key => $junk) {
+			if(!array_key_exists($key, $overrides)) {
+				continue;
+			}
+
+			if(!array_key_exists($key, $defaults)) {
+				$details[$key] = $overrides[$key];
+				continue;
+			}
+
+			if(is_array($defaults[$key])) {
+				if(!is_array($overrides[$key])) {
+					unset($details[$key]);
+					continue;
+				}
+
+				$details[$key] = $this->setDetails(
+					$details[$key],
+					$overrides[$key]);
+			} else {
+				$details[$key] = $overrides[$key];
+			}
+		}
+
+		return $details;
 	}
 
 	/**
