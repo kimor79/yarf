@@ -346,23 +346,21 @@ class Yarf extends ApiProducerDetails {
 			$legend = $data['legend'];
 		}
 
-		if(array_key_exists('line', $data)) {
-			if(ctype_digit((string) $data['line'])) {
-				$line = $data['line'];
-			}
-		}
-
 		if($data['area']) {
 			$stack = '';
 			if($data['area'] === 'stack') {
-				$stack = '::STACK';
+				$stack = sprintf(":%s:STACK", $legend);
 			}
 
 			$output[] = sprintf("AREA:%s%s%s", $ds, $color, $stack);
 		}
 
-		$output[] = sprintf("LINE%s:%s%s:%s",
-			$data['line'], $ds, $color, $legend);
+		if(array_key_exists('line', $data)) {
+			if(ctype_digit((string) $data['line'])) {
+				$output[] = sprintf("LINE%s:%s%s:%s",
+					$data['line'], $ds, $color, $legend);
+			}
+		}
 
 		return $output;
 	}
