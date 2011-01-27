@@ -433,7 +433,10 @@ class Yarf extends ApiProducerDetails {
 
 		foreach($this->rrd_options as $key => $value) {
 			$output[] = $key;
-			$output[] = $value;
+
+			if(!is_null($value)) {
+				$output[] = $value;
+			}
 		}
 
 		return $output;
