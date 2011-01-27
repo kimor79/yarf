@@ -280,7 +280,15 @@ class Yarf extends ApiProducerDetails {
 	 * @return bool
 	 */
 	public function rrdExists($node = '') {
-		$glob = $this->rrdFiles($node, array('first' => true));
+		$options = array(
+			'first' => true,
+		);
+
+		if($this->getConfig('multi_file')) {
+			$options['ext'] = '*';
+		}
+
+		$glob = $this->rrdFiles($node, $options);
 
 		if(!empty($glob)) {
 			return true;
