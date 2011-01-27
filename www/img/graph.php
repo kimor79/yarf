@@ -135,8 +135,8 @@ reset($nodes);
 
 if(empty($nodes)) {
 	$message = 'No nodes for this data set';
-	if(count($nodes) == 1) {
-		$message = 'No graph for ' . $nodes[0];
+	if(count($entries) == 1) {
+		$message = 'No graph for ' . $entries[0];
 	}
 
 	$api->sendHeaders();
