@@ -32,8 +32,75 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $data_types = array();
 
 $builtin_data_types = array(
+	'CPU Usage' => array(
+		'class_options' => array(
+			'config' => array(
+				'combined_average' => true,
+				'multi_file' => true,
+				'percent' => true,
+			),
+			'datasources' => array(
+				0 => NULL,
+				'user' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#FFD000',
+						'format' => '%3.0lf',
+						'legend' => 'User     ',
+						'line' => NULL,
+					),
+				),
+				'nice' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#888888',
+						'format' => '%3.0lf',
+						'legend' => 'Nice     ',
+						'line' => NULL,
+					),
+				),
+				'system' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#0000FF',
+						'format' => '%3.0lf',
+						'legend' => 'System   ',
+						'line' => NULL,
+					),
+				),
+				'interrupt' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#FF0000',
+						'format' => '%3.0lf',
+						'legend' => 'Interrupt',
+						'line' => NULL,
+					),
+				),
+				'idle' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#00FF00',
+						'format' => '%3.0lf',
+						'legend' => 'Idle     ',
+						'line' => NULL,
+					),
+				),
+			),
+			'paths' => array(
+				'cpu-*/cpu-',
+			),
+			'rrd' => array(
+				'-l' => 0,
+				'-r' => NULL,
+				'-u' => 100,
+				'-v' => 'Percent',
+			),
+			'title' => 'CPU',
+		),
+	),
+
 	'Disk IO Bytes (All)' => array(
-		'class' => 'YarfGeneric',
 		'class_options' => array(
 			'datasources' => array(
 				array(
@@ -58,13 +125,13 @@ $builtin_data_types = array(
 			),
 			'title' => 'Disk IO (All)',
 		),
-		'file' => 'generic',
 	),
 
 	'load' => array(
-		'class' => 'YarfGeneric',
 		'class_options' => array(
-			'combined_average' => true,
+			'config' => array(
+				'combined_average' => true,
+			),
 			'datasources' => array(
 				array(
 					'shortterm' => array(
@@ -91,7 +158,109 @@ $builtin_data_types = array(
 			),
 			'title' => 'Load',
 		),
-		'file' => 'generic',
+	),
+
+	'Memory Usage' => array(
+		'class_options' => array(
+			'config' => array(
+				'combined_average' => true,
+				'multi_file' => true,
+				'percent' => true,
+			),
+			'datasources' => array(
+				0 => NULL,
+				'active' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#FFD000',
+						'format' => '%3.0lf',
+						'legend' => 'Active  ',
+						'line' => NULL,
+					),
+				),
+				'inactive' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#888888',
+						'format' => '%3.0lf',
+						'legend' => 'Inactive',
+						'line' => NULL,
+					),
+				),
+				'wired' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#FF0000',
+						'format' => '%3.0lf',
+						'legend' => 'Wired   ',
+						'line' => NULL,
+					),
+				),
+				'cache' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#9370DB',
+						'format' => '%3.0lf',
+						'legend' => 'Cache   ',
+						'line' => NULL,
+					),
+				),
+				'free' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#00FF00',
+						'format' => '%3.0lf',
+						'legend' => 'Free    ',
+						'line' => NULL,
+					),
+				),
+			),
+			'paths' => array(
+				'memory/memory-',
+			),
+			'rrd' => array(
+				'-l' => 0,
+				'-r' => NULL,
+				'-u' => 100,
+				'-v' => '% Utilization',
+			),
+			'title' => 'Memory',
+		),
+	),
+
+	'Swap' => array(
+		'class_options' => array(
+			'config' => array(
+				'combined_average' => true,
+				'multi_file' => true,
+				'percent' => true,
+			),
+			'datasources' => array(
+				0 => NULL,
+				'used' => array(
+					'value' => array(
+						'area' => 'stack',
+						'color' => '#FF0000',
+						'format' => '%3.0lf',
+						'legend' => 'Used',
+						'line' => NULL,
+					),
+				),
+				'free' => array(
+					'value' => NULL,
+				),
+			),
+			'paths' => array(
+				'swap/swap-',
+			),
+			'rrd' => array(
+				'-l' => 0,
+				'-r' => NULL,
+				'-u' => 100,
+				'-v' => '% Utilization',
+			),
+			'title' => 'Swap',
+		),
 	),
 
 	'tcpconns' => array(
@@ -100,9 +269,10 @@ $builtin_data_types = array(
 	),
 
 	'temperature' => array(
-		'class' => 'YarfGeneric',
 		'class_options' => array(
-			'combined_average' => true,
+			'config' => array(
+				'combined_average' => true,
+			),
 			'datasources' => array(
 				array(
 					'value' => array(
@@ -119,13 +289,43 @@ $builtin_data_types = array(
 			),
 			'title' => 'Temperature',
 		),
-		'file' => 'generic',
+	),
+
+	'Traffic - Bits' => array(
+		'class_options' => array(
+			'datasources' => array(
+				array(
+					'rx' => array(
+						'color' => '#3020EE',
+						'format' => '%5.2lf%s',
+						'legend' => 'RX',
+						'scale' => '8,*',
+					),
+					'tx' => array(
+						'color' => '#00FF00',
+						'format' => '%5.2lf%s',
+						'legend' => 'TX',
+						'scale' => '8,*',
+					),
+					'value' => NULL,
+				),
+			),
+			'paths' => array(
+				'interface/if_octets-*',
+				'snmp/if_octets_u-*',
+			),
+			'rrd' => array(
+				'-v' => 'Bits/sec',
+			),
+			'title' => 'Traffic',
+		),
 	),
 
 	'uptime' => array(
-		'class' => 'YarfGeneric',
 		'class_options' => array(
-			'combined_average' => true,
+			'config' => array(
+				'combined_average' => true,
+			),
 			'datasources' => array(
 				array(
 					'value' => array(
@@ -142,7 +342,6 @@ $builtin_data_types = array(
 			),
 			'title' => 'Uptime',
 		),
-		'file' => 'generic',
 	),
 );
 
