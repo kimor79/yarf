@@ -339,7 +339,6 @@ class Yarf extends ApiProducerDetails {
 	public function rrdGraph($ds, $data) {
 		$color = '#3F3F3F';
 		$legend = '';
-		$line = 1;
 		$output = array();
 
 		if(array_key_exists('color', $data)) {
@@ -364,6 +363,9 @@ class Yarf extends ApiProducerDetails {
 				$output[] = sprintf("LINE%s:%s%s:%s",
 					$data['line'], $ds, $color, $legend);
 			}
+		} else {
+			$output[] = sprintf("LINE1:%s%s:%s",
+				$ds, $color, $legend);
 		}
 
 		return $output;
