@@ -235,6 +235,10 @@ class Yarf extends ApiProducerDetails {
 		$num = 0;
 		$combine = array();
 
+		if($this->getConfig('percent')) {
+			$prefix = 'percent' . $prefix;
+		}
+
 		foreach($files as $o_file) {
 			$file = str_replace(array('/', '.'), '_', $o_file);
 

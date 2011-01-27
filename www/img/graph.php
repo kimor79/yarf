@@ -154,6 +154,10 @@ while(list($junk, $node) = each($nodes)) {
 	$r_node = $node;
 	$node = str_replace('.', '_', $node);
 
+	$percent = array();
+	$t_count = 0;
+	$total = array();
+
 	foreach($api->getDS() as $key => $data) {
 		$file_data = array();
 
@@ -174,7 +178,37 @@ while(list($junk, $node) = each($nodes)) {
 		$rrd = array_merge($rrd, $defs);
 
 		foreach($data as $ds => $junk) {
+			$o_ds = $ds;
 			$ds = $key . $ds;
+
+			$percent['avg' . $ds] = sprintf(
+				"CDEF:%s%s=percent%s%s,total%s%s,/,100,*",
+				$ds, $node, $ds, $node, $o_ds, $node);
+			$percent['max' . $ds] = sprintf(
+				"CDEF:max%s%s=maxpercent%s%s,total%s%s,/,100,*",
+				$ds, $node, $ds, $node, $o_ds, $node);
+			$percent['min' . $ds] = sprintf(
+				"CDEF:min%s%s=minpercent%s%s,total%s%s,/,100,*",
+				$ds, $node, $ds, $node, $o_ds, $node);
+
+			if($t_count == 0) {
+				$total['avg' . $o_ds] = sprintf(
+					"CDEF:total%s%s=percent%s%s",
+					$o_ds, $node, $ds, $node);
+				$total['max' . $o_ds] = sprintf(
+					"CDEF:totalmax%s%s=percent%s%s",
+					$o_ds, $node, $ds, $node);
+				$total['min' . $o_ds] = sprintf(
+					"CDEF:totalmin%s%s=percent%s%s",
+					$o_ds, $node, $ds, $node);
+			} else {
+				$total['avg' . $o_ds] .= sprintf(
+					",percent%s%s,ADDNAN", $ds, $node);
+				$total['max' . $o_ds] .= sprintf(
+					",maxpercent%s%s,ADDNAN", $ds, $node);
+				$total['min' . $o_ds] .= sprintf(
+					",minpercent%s%s,ADDNAN", $ds, $node);
+			}
 
 			if($count == 0) {
 				$combine['avg' . $ds] =
@@ -198,6 +232,13 @@ while(list($junk, $node) = each($nodes)) {
 					$ds, $node);
 			}
 		}
+
+		$t_count++;
+	}
+
+	if($api->getConfig('percent')) {
+		$rrd = array_merge($rrd, array_values($total));
+		$rrd = array_merge($rrd, array_values($percent));
 	}
 
 	$count++;
