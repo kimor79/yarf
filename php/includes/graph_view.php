@@ -52,18 +52,38 @@ foreach($request['graph'] as $query) {
 
 	$row_combined[$int] = $query;
 
-	$nodes = $yarf->parseNodes($request['expression']);
-
-	// file exists for $data_type
-	$row_included[$int] = array(
-		'included' => 1,
-		'excluded' => 5,
-	);
-
-	foreach($nodes as $node) {
-		$row_nodes[$node][$int] = $query;
+	if(!array_key_exists($int, $row_included)) {
+		$row_included[$int] = array(
+			'included' => 0,
+			'excluded' => 0,
+		);
 	}
 
+	$nodes = $yarf->parseNodes($request['expression']);
+
+	$type = $data_types[$graph['data']];
+	if(array_key_exists('class', $type)) {
+		require_once('yarf/classes/' . $type['class']['file'] . '.php');
+		$class = $type['class']['name'];
+	} else {
+		$class = 'Yarf';
+	}
+
+	if(array_key_exists('class_options', $type)) {
+		$api = new $class($type['class_options']);
+	} else {
+		$api = $class;
+	}
+
+	foreach($nodes as $node) {
+		if($api->rrdExists($node)) {
+			$row_included[$int]['included']++;
+		} else {
+			$row_included[$int]['excluded']++;
+		}
+
+		$row_nodes[$node][$int] = $query;
+	}
 
 	$int++;
 }
