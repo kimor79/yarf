@@ -35,6 +35,20 @@ body {
 	vertical-align: top;
 }
 
+#gv_main {
+	margin: 5px;
+}
+
+#gv_main .gv_nodes {
+	text-align: center;
+}
+
+#gv_main td {
+	border-top: 1px;
+	padding: 5px;
+	vertical-align: top;
+}
+
 label {
 	font-weight: bold;
 }

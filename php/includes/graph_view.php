@@ -90,8 +90,8 @@ foreach($request['graph'] as $query) {
 
 ?>
 
-<table>
- <tr>
+<table id="gv_main">
+ <tr class="gv_combined">
 <?php
 $int = 0;
 foreach($row_combined as $row) {
@@ -101,7 +101,7 @@ foreach($row_combined as $row) {
 }
 ?>
  </tr>
- <tr>
+ <tr class="gv_nodes">
 <?php
 foreach($row_included as $row) {
 	echo '  <td>' . $row['included'] . ' included<br>';
@@ -112,7 +112,7 @@ foreach($row_included as $row) {
 <?php
 $int = 0;
 foreach($row_nodes as $node => $n_query) {
-	echo ' <tr>' . "\n";
+	echo ' <tr class="gv_single">' . "\n";
 	foreach($n_query as $query) {
 		$row_images['n' . $int] = 'img/graph.php?node=' . urlencode($node) . '&' . $query;
 		echo '  <td><img id="graphn' . $int . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
