@@ -37,10 +37,9 @@ if(get_config('nodes', 'use_nodegroups')) {
 
 ?>
 
+<div id="nf_main">
 <form id="node_submit" onSubmit="return false;">
-<div>
-<label for="expression"><?php echo $nf_label; ?>:</label>
-</div>
+<label for="expression"><?php echo $nf_label; ?>:</label><br>
 <?php
 if(!empty($available_nodes)) {
 	$nf_get_nodes = array();
@@ -67,10 +66,11 @@ if(!empty($available_nodes)) {
 	echo '</select>' . "\n";
 } else {
 ?>
- <textarea id="expression" name="expression"><?php echo $_GET['expression']; ?></textarea>
+<textarea id="expression" name="expression"><?php echo $_GET['expression']; ?></textarea>
 <?php
 }
 ?>
 </form>
+</div>
 
 <span id="left_toggle">toggle</span>

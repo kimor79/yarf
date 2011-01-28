@@ -53,6 +53,16 @@ label {
 	font-weight: bold;
 }
 
+#nf_main {
+	margin: 5px;
+	padding: 0;
+}
+
+#nf_main #expression {
+	height: 85%;
+	width: 98%;
+}
+
 #quicknav {
 	margin: 10px 10px 10px 10px;
 }

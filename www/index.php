@@ -42,13 +42,6 @@ $yui = rtrim(get_config('yui', 'base_uri'), '/');
   <title>YARF - Yet Another RRD Frontend</title>
 
 <style type="text/css">
-#expression {
-	height: 70%;
-	margin: 1%;
-	padding: 0;
-	width: 98%;
-}
-
 #quicklink {
 	width: 200px;
 }
