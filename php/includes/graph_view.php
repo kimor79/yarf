@@ -54,8 +54,8 @@ foreach($request['graph'] as $query) {
 
 	if(!array_key_exists($int, $row_included)) {
 		$row_included[$int] = array(
-			'included' => 0,
-			'excluded' => 0,
+			'included' => array(),
+			'excluded' => array(),
 		);
 	}
 
@@ -75,15 +75,16 @@ foreach($request['graph'] as $query) {
 		$api = $class;
 	}
 
-	foreach($nodes as $node) {
+	while(list($junk, $node) = each($nodes)) {
 		if($api->rrdExists($node)) {
-			$row_included[$int]['included']++;
+			$row_included[$int]['included'][] = $node;
 		} else {
-			$row_included[$int]['excluded']++;
+			$row_included[$int]['excluded'][] = $node;
 		}
 
 		$row_nodes[$node][$int] = $query;
 	}
+	reset($nodes);
 
 	$int++;
 }
@@ -93,19 +94,19 @@ foreach($request['graph'] as $query) {
 <table id="gv_main">
  <tr class="gv_combined">
 <?php
-$int = 0;
-foreach($row_combined as $row) {
-	$row_images['c' . $int] = 'img/graph.php?expression=' . urlencode($request['expression']) . '&' . $row;
-	echo '  <td><img id="graphc' . $int . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
-	$int++;
+foreach($row_combined as $key => $row) {
+	$row_images['c' . $key] = 'img/graph.php?expression=' . urlencode($request['expression']) . '&' . $row;
+	echo '  <td><img id="graphc' . $key . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
 }
 ?>
  </tr>
  <tr class="gv_nodes">
 <?php
-foreach($row_included as $row) {
-	echo '  <td>' . $row['included'] . ' included<br>';
-	echo $row['excluded'] . ' excluded</td>' . "\n";
+foreach($row_included as $key => $row) {
+	echo "  <td>";
+	printf("<span onClick=\"showNodeList('nodelist%s')\">%s included<br>%s excluded</span>",
+		$key, count($row['included']), count($row['excluded']));
+	echo "</td>\n";
 }
 ?>
  </tr>
@@ -122,3 +123,23 @@ foreach($row_nodes as $node => $n_query) {
 }
 ?>
 </table>
+
+<?php
+foreach($row_included as $key => $row) {
+	printf("<div id=\"nodelist%s\" class=\"gv_nodelist\">\n", $key);
+
+	if(!empty($row['included'])) {
+		echo "<label>Included</label><br>\n";
+		echo implode("<br>\n", $row['included']);
+		echo "<br>\n";
+	}
+
+	if(!empty($row['excluded'])) {
+		echo "<label>Excluded</label><br>\n";
+		echo implode("<br>\n", $row['excluded']);
+		echo "<br>\n";
+	}
+
+	echo "</div>\n";
+}
+?>

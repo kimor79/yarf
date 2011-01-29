@@ -49,6 +49,10 @@ body {
 	vertical-align: top;
 }
 
+.gv_nodelist {
+	display: none;
+}
+
 label {
 	font-weight: bold;
 }
