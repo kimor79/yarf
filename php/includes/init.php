@@ -44,7 +44,10 @@ function get_config($key = '', $sub = '') {
 			'paths' => '/yarf/archive',
 		),
 
-		'rrd_paths' => '/var/db/collectd',
+		'rrd' => array(
+			'delay' => 0,
+			'paths' => '/var/db/collectd',
+		),
 
 		'yui' => array(
 			'base_uri' => 'http://yui.yahooapis.com/2.8.2r1/build',

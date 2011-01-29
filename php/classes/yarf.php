@@ -77,7 +77,7 @@ class Yarf extends ApiProducerDetails {
 
 		$this->contentType('png', 'image/png');
 
-		$this->base_paths = explode(PATH_SEPARATOR, get_config('rrd_paths'));
+		$this->base_paths = explode(PATH_SEPARATOR, get_config('rrd', 'paths'));
 		$this->trim_domain = get_config('trim_domain');
 
 		if(array_key_exists('config', $options)) {
@@ -204,6 +204,10 @@ class Yarf extends ApiProducerDetails {
 	public function rrdDate() {
 		$date = date('r');
 
+		if(get_config('rrd', 'delay') > 0) {
+			$date = date('r', time() - get_config('rrd', 'delay'));
+		}
+
 		if(array_key_exists('archive', $this->request)) {
 			$file = $this->findArchive($this->request['archive']) . '/timestamp';
 			if(is_file($file)) {
@@ -243,26 +247,39 @@ class Yarf extends ApiProducerDetails {
 			$file = str_replace(array('/', '.'), '_', $o_file);
 
 			foreach($sources as $ds => $junk) {
-				$output[] = sprintf("DEF:%s%s%s=%s:%s:AVERAGE",
+				$avg = sprintf("DEF:%s%s%s=%s:%s:AVERAGE",
 					$prefix, $ds, $file, $o_file, $ds);
-				$output[] = sprintf("DEF:min%s%s%s=%s:%s:MIN",
+				$max = sprintf("DEF:max%s%s%s=%s:%s:MAX",
 					$prefix, $ds, $file, $o_file, $ds);
-				$output[] = sprintf("DEF:max%s%s%s=%s:%s:MAX",
+				$min = sprintf("DEF:min%s%s%s=%s:%s:MIN",
 					$prefix, $ds, $file, $o_file, $ds);
+
+				if(get_config('rrd', 'delay') > 0) {
+					$avg .= sprintf(":end=now-%sseconds",
+						get_config('rrd', 'delay'));
+					$max .= sprintf(":end=now-%sseconds",
+						get_config('rrd', 'delay'));
+					$min .= sprintf(":end=now-%sseconds",
+						get_config('rrd', 'delay'));
+				}
+
+				$output[] = $avg;
+				$output[] = $max;
+				$output[] = $min;
 
 				if($num == 0) {
 					$combine['avg' . $ds] = sprintf("CDEF:%s%s%s=%s%s%s",
 						$prefix, $ds, $node, $prefix, $ds, $file);
-					$combine['min' . $ds] = sprintf("CDEF:min%s%s%s=min%s%s%s",
-						$prefix, $ds, $node, $prefix, $ds, $file);
 					$combine['max' . $ds] = sprintf("CDEF:max%s%s%s=max%s%s%s",
+						$prefix, $ds, $node, $prefix, $ds, $file);
+					$combine['min' . $ds] = sprintf("CDEF:min%s%s%s=min%s%s%s",
 						$prefix, $ds, $node, $prefix, $ds, $file);
 				} else {
 					$combine['avg' . $ds] .= sprintf(",%s%s%s,ADDNAN",
 						$prefix, $ds, $file);
-					$combine['min' . $ds] .= sprintf(",min%s%s%s,ADDNAN",
-						$prefix, $ds, $file);
 					$combine['max' . $ds] .= sprintf(",max%s%s%s,ADDNAN",
+						$prefix, $ds, $file);
+					$combine['min' . $ds] .= sprintf(",min%s%s%s,ADDNAN",
 						$prefix, $ds, $file);
 				}
 			}
