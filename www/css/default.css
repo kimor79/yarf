@@ -31,16 +31,16 @@ body {
 	width: 125px;
 }
 
-#gf_left {
-	vertical-align: top;
-}
-
 #gf_hide {
 	bottom: 5px;
 	position: absolute;
 	right: 5px;
 	text-align: right;
 	vertical-align: bottom;
+}
+
+#gf_left {
+	vertical-align: top;
 }
 
 #gv_main {
