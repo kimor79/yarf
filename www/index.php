@@ -116,11 +116,11 @@ Event.onDOMReady(function() {
 	loading.setBody('<img src="<?php echo get_config('yui', 'loading_img'); ?>"/>');
 	loading.render(document.body);
 
-	Event.on('top_toggle', 'click', function(ev) {
+	Event.on('top_hide', 'click', function(ev) {
 		layout.getUnitByPosition('top').toggle();
 	});
 
-	Event.on('left_toggle', 'click', function(ev) {
+	Event.on('left_hide', 'click', function(ev) {
 		layout.getUnitByPosition('left').toggle();
 	});
 

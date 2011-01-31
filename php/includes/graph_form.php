@@ -160,11 +160,15 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 
   </td>
   <td id="gf_right">
+<div id="gf_submit">
 <form id="submit_graph" onSubmit="submitGraph(); return false;">
  <input type="submit" name="graph" value="Graph">
 </form>
+</div>
 
-<span id="top_toggle">toggle</span>
+<div id="gf_hide">
+<span id="top_hide" class="layout_hide">hide</span>
+</div>
   </td>
  </tr>
 </table>

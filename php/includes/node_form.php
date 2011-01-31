@@ -73,4 +73,6 @@ if(!empty($available_nodes)) {
 </form>
 </div>
 
-<span id="left_toggle">toggle</span>
+<div id="nf_hide">
+<span id="left_hide" class="layout_hide">hide</span>
+</div>

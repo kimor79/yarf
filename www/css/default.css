@@ -35,6 +35,14 @@ body {
 	vertical-align: top;
 }
 
+#gf_hide {
+	bottom: 5px;
+	position: absolute;
+	right: 5px;
+	text-align: right;
+	vertical-align: bottom;
+}
+
 #gv_main {
 	margin: 5px;
 }
@@ -55,6 +63,19 @@ body {
 
 label {
 	font-weight: bold;
+}
+
+.layout_hide {
+	cursor: pointer;
+	margin: 5px;
+}
+
+#nf_hide {
+	bottom: 5px;
+	position: absolute;
+	right: 5px;
+	text-align: right;
+	vertical-align: bottom;
 }
 
 #nf_main {
