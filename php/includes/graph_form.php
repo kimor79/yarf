@@ -166,6 +166,16 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 </form>
 </div>
 
+<?php
+if(get_config('rrd', 'delay') > 0) {
+?>
+<div id="gf_delay">
+Graph data is delayed <?php echo get_config('rrd', 'delay'); ?> seconds
+</div>
+<?php
+}
+?>
+
 <div id="gf_hide">
 <span id="top_hide" class="layout_hide">hide</span>
 </div>

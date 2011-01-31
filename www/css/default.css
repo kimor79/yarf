@@ -43,6 +43,11 @@ body {
 	vertical-align: top;
 }
 
+#gf_delay {
+	font-size: 10px;
+	margin: 20px 0 0;
+}
+
 #gv_main {
 	margin: 5px;
 }
