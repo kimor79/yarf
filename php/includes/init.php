@@ -44,6 +44,8 @@ function get_config($key = '', $sub = '') {
 			'paths' => '/yarf/archive',
 		),
 
+		'data_types' => '/usr/local/etc/yarf/data_types.php',
+
 		'rrd' => array(
 			'delay' => 0,
 			'paths' => '/var/db/collectd',
@@ -78,8 +80,10 @@ function get_config($key = '', $sub = '') {
 	return NULL;
 }
 
+$data_types = array();
+
 require_once('yarf/classes/yarf.php');
-require_once('yarf/includes/data_types.php');
+require_once(get_config('data_types'));
 
 $yarf = new Yarf();
 $request = array_merge($_GET, $_POST);
