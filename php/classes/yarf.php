@@ -77,7 +77,8 @@ class Yarf extends ApiProducerDetails {
 
 		$this->contentType('png', 'image/png');
 
-		$this->base_paths = explode(PATH_SEPARATOR, get_config('rrd', 'paths'));
+		$this->base_paths = explode(PATH_SEPARATOR,
+			get_config('rrd', 'paths'));
 		$this->trim_domain = get_config('trim_domain');
 
 		if(array_key_exists('config', $options)) {
@@ -115,7 +116,8 @@ class Yarf extends ApiProducerDetails {
 			return $this->archive_path;
 		}
 
-		$paths = explode(PATH_SEPARATOR, get_config('archive', 'paths'));
+		$paths = explode(PATH_SEPARATOR,
+			get_config('archive', 'paths'));
 
 		foreach($paths as $path) {
 			if(is_dir($path . '/' . $archive)) {
@@ -176,7 +178,8 @@ class Yarf extends ApiProducerDetails {
 		$nodes = array();
 
 		if(isset($ngclient)) {
-			$parsed = $ngclient->getNodesFromExpression($expression);
+			$parsed =
+				$ngclient->getNodesFromExpression($expression);
 			if(!empty($parsed)) {
 				$nodes = $parsed;
 			}
@@ -209,7 +212,8 @@ class Yarf extends ApiProducerDetails {
 		}
 
 		if(array_key_exists('archive', $this->request)) {
-			$file = $this->findArchive($this->request['archive']) . '/timestamp';
+			$file = $this->findArchive($this->request['archive'])
+				. '/timestamp';
 			if(is_file($file)) {
 				$time = file_get_contents($file);
 				$time = trim($time);
@@ -233,7 +237,8 @@ class Yarf extends ApiProducerDetails {
 	 * @param string $prefix optional string to prepend to final CDEF
 	 * @return array
 	 */
-	public function rrdDef($node = '', $files = array(), $sources = array(), $prefix = '') {
+	public function rrdDef($node = '', $files = array(),
+			$sources = array(), $prefix = '') {
 		$output = array();
 
 		$num = 0;
@@ -325,7 +330,8 @@ class Yarf extends ApiProducerDetails {
 		$search = $this->base_paths;
 
 		if(array_key_exists('archive', $this->request)) {
-			$archive = $this->findArchive($this->request['archive']);
+			$archive =
+				$this->findArchive($this->request['archive']);
 			if($archive) {
 				$search = array($archive);
 			}
@@ -421,7 +427,8 @@ class Yarf extends ApiProducerDetails {
 		if(array_key_exists('archive', $this->request)) {
 			$label .= ' - ' . $this->request['archive'];
 
-			$file = $this->findArchive($this->request['archive']) . '/timestamp';
+			$file = $this->findArchive($this->request['archive'])
+				. '/timestamp';
 			if(is_file($file)) {
 				$time = file_get_contents($file);
 				$time = trim($time);

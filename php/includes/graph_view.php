@@ -95,8 +95,10 @@ foreach($request['graph'] as $query) {
  <tr class="gv_combined">
 <?php
 foreach($row_combined as $key => $row) {
-	$row_images['c' . $key] = 'img/graph.php?expression=' . urlencode($request['expression']) . '&' . $row;
-	echo '  <td><img id="graphc' . $key . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
+	$row_images['c' . $key] = sprintf("img/graph.php?expression=%s&%s",
+		urlencode($request['expression']), $row);
+	printf("  <td<img id=\"graphc%s\" src=\"%s\"></td>\n",
+		$key, get_config('yui', 'loading_img'));
 }
 ?>
  </tr>
@@ -115,8 +117,10 @@ $int = 0;
 foreach($row_nodes as $node => $n_query) {
 	echo ' <tr class="gv_single">' . "\n";
 	foreach($n_query as $query) {
-		$row_images['n' . $int] = 'img/graph.php?node=' . urlencode($node) . '&' . $query;
-		echo '  <td><img id="graphn' . $int . '" src="' . get_config('yui', 'loading_img') . '"></td>' . "\n";
+		$row_images['n' . $int] = sprintf("img/graph.php?node=%s&%s",
+			urlencode($node), $query);
+		printf(" <td><img id=\"graphn%s\" src=\"%s\"></td>\n",
+			$int, get_config('yui', 'loading_img'));
 		$int++;
 	}
 	echo ' </tr>';

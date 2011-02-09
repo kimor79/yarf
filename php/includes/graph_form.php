@@ -46,14 +46,16 @@ if(array_key_exists('graph', $request)) {
 <?php
 $quicklinks_file = get_config('quicklinks', 'file');
 if(file_exists($quicklinks_file)) {
-	$quicklinks = @file($quicklinks_file, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+	$quicklinks = @file($quicklinks_file,
+		FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 
 	if(!empty($quicklinks)) {
-		echo '<div id="quicknav">';
-		echo '<label for="quicklink">Quick Links</label><br>' . "\n";
-		echo '<select id="quicklink" onChange="showQuickLink();">' . "\n";
-		echo ' <option value=""></option>' . "\n";
-
+?>
+<div id="quicknav">
+<label for="quicklink">Quick Links</label><br>
+<select id="quicklink" onChange="showQuickLink();">
+ <option value=""></option>
+<?php
 		foreach($quicklinks as $line) {
 			if(substr($line, 0, 1) == '#') {
 				continue;
@@ -103,8 +105,10 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 	for($time_num = 1; $time_num < 13; $time_num++) {
 		echo ' <option ' . "\n";
 		if(array_key_exists($graph_num, $desired_graphs)) {
-			if(array_key_exists('t_val', $desired_graphs[$graph_num])) {
-				if($desired_graphs[$graph_num]['t_val'] == $time_num) {
+			if(array_key_exists('t_val',
+					$desired_graphs[$graph_num])) {
+				if($desired_graphs[$graph_num]['t_val']
+						== $time_num) {
 					echo 'selected ';
 				}
 			}
@@ -118,8 +122,10 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 	foreach($time_units as $time_unit) {
 		echo ' <option ' . "\n";
 		if(array_key_exists($graph_num, $desired_graphs)) {
-			if(array_key_exists('t_unit', $desired_graphs[$graph_num])) {
-				if($desired_graphs[$graph_num]['t_unit'] == $time_unit) {
+			if(array_key_exists('t_unit',
+					$desired_graphs[$graph_num])) {
+				if($desired_graphs[$graph_num]['t_unit']
+						== $time_unit) {
 					echo 'selected ';
 				}
 			}
@@ -137,8 +143,10 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 	foreach($data_types as $type => $data) {
 		echo ' <option ' . "\n";
 		if(array_key_exists($graph_num, $desired_graphs)) {
-			if(array_key_exists('data', $desired_graphs[$graph_num])) {
-				if($desired_graphs[$graph_num]['data'] == $type) {
+			if(array_key_exists('data',
+					$desired_graphs[$graph_num])) {
+				if($desired_graphs[$graph_num]['data']
+						== $type) {
 					echo 'selected ';
 				}
 			}

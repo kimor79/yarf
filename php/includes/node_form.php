@@ -47,7 +47,8 @@ if(!empty($available_nodes)) {
 		$nf_get_nodes = explode(',', $_GET['expression']);
 	}
 
-	echo '<select id="expression" name="expression" multiple="multiple">' . "\n";
+	echo '<select id="expression" name="expression" multiple="multiple">';
+	echo "\n";
 
 	foreach($available_nodes as $node) {
 		if(substr($node, 0, 1) == '#') {
