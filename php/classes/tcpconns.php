@@ -51,7 +51,7 @@ class YarfTcpConns extends Yarf {
 		$this->optional['state'] = '_multi_state';
 
 		$this->sanitize['port'] = '_multi_';
-		$this->sanitize['state'] = '_multi_';
+		$this->sanitize['state'] = '_multi_state';
 	}
 
 	/**
