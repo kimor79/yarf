@@ -264,8 +264,35 @@ $builtin_data_types = array(
 	),
 
 	'tcpconns' => array(
-		'class' => 'YarfTcpConns',
-		'file' => 'tcpconns',
+		'class' => array(
+			'file' => 'tcpconns',
+			'name' => 'YarfTcpConns',
+		),
+		'class_options' => array(
+			'config' => array(
+				'multi_file' => true,
+			),
+			'datasources' => array(
+				0 => NULL,
+				'local' => array(
+					'value' => array(
+						'color' => '#3020EE',
+						'format' => '%4.0lf%s',
+						'legend' => 'Local ',
+					),
+				),
+				'remote' => array(
+					'value' => array(
+						'color' => '#00FF00',
+						'format' => '%4.0lf%s',
+						'legend' => 'Remote',
+					),
+				),
+			),
+			'rrd' => array(
+				'-v' => 'Connections',
+			),
+		),
 	),
 
 	'temperature' => array(
