@@ -93,6 +93,11 @@ label {
 	width: 98%;
 }
 
+#nographs {
+	margin: 10px;
+	text-align: center;
+}
+
 #quicknav {
 	margin: 10px 10px 10px 10px;
 }

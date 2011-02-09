@@ -33,7 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <?php
 if(empty($request)) {
-	echo 'Please select up to 4 graphs from the form above';
+?>
+<div id="nographs">Please select up to 4 graphs from the form above</div>
+<?php
 	return;
 }
 
