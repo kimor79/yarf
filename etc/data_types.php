@@ -317,6 +317,62 @@ $data_types = array(
 		),
 	),
 
+	'Traffic - Errors' => array(
+		'class_options' => array(
+			'datasources' => array(
+				array(
+					'rx' => array(
+						'color' => '#3020EE',
+						'format' => '%5.2lf%s',
+						'legend' => 'RX',
+					),
+					'tx' => array(
+						'color' => '#00FF00',
+						'format' => '%5.2lf%s',
+						'legend' => 'TX',
+					),
+					'value' => NULL,
+				),
+			),
+			'paths' => array(
+				'interface/if_errors-*',
+				'snmp/if_errors_u-*',
+			),
+			'rrd' => array(
+				'-v' => 'Errors/sec',
+			),
+			'title' => 'Traffic',
+		),
+	),
+
+	'Traffic - Packets' => array(
+		'class_options' => array(
+			'datasources' => array(
+				array(
+					'rx' => array(
+						'color' => '#3020EE',
+						'format' => '%5.2lf%s',
+						'legend' => 'RX',
+					),
+					'tx' => array(
+						'color' => '#00FF00',
+						'format' => '%5.2lf%s',
+						'legend' => 'TX',
+					),
+					'value' => NULL,
+				),
+			),
+			'paths' => array(
+				'interface/if_packets-*',
+				'snmp/if_packets_u-*',
+			),
+			'rrd' => array(
+				'-v' => 'Packets/sec',
+			),
+			'title' => 'Traffic',
+		),
+	),
+
 	'Uptime' => array(
 		'class_options' => array(
 			'config' => array(
