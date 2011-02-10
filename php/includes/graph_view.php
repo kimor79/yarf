@@ -45,6 +45,8 @@ $row_included = array();
 $row_nodes = array();
 $int = 0;
 
+$nodes = $yarf->parseNodes($request['expression']);
+
 foreach($request['graph'] as $query) {
 	parse_str($query, $graph);
 
@@ -61,8 +63,6 @@ foreach($request['graph'] as $query) {
 		);
 	}
 
-	$nodes = $yarf->parseNodes($request['expression']);
-
 	$type = $data_types[$graph['data']];
 	if(array_key_exists('class', $type)) {
 		require_once('yarf/classes/' . $type['class']['file'] . '.php');
@@ -75,6 +75,15 @@ foreach($request['graph'] as $query) {
 		$api = new $class($type['class_options']);
 	} else {
 		$api = $class;
+	}
+
+	$input = $api->setInput($graph);
+	unset($input['data']);
+
+	$errors = $api->validateInput($input, $api->required, $api->optional);
+	if(empty($errors)) {
+		$input = $api->sanitizeInput($input, $api->sanitize);
+		$api->request = $input;
 	}
 
 	while(list($junk, $node) = each($nodes)) {
