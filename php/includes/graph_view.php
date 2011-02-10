@@ -99,7 +99,7 @@ foreach($request['graph'] as $query) {
 foreach($row_combined as $key => $row) {
 	$row_images['c' . $key] = sprintf("img/graph.php?expression=%s&%s",
 		urlencode($request['expression']), $row);
-	printf("  <td<img id=\"graphc%s\" src=\"%s\"></td>\n",
+	printf("  <td><img id=\"graphc%s\" src=\"%s\"></td>\n",
 		$key, get_config('yui', 'loading_img'));
 }
 ?>
