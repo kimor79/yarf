@@ -107,8 +107,8 @@ foreach($row_combined as $key => $row) {
  <tr class="gv_nodes">
 <?php
 foreach($row_included as $key => $row) {
-	echo "  <td>";
-	printf("<span onClick=\"showNodeList('nodelist%s')\">%s included<br>%s excluded</span>",
+	echo '  <td><span class="nodelistsum"';
+	printf(" id=\"nodelistsum%s\">%s included<br>%s excluded</span>",
 		$key, count($row['included']), count($row['excluded']));
 	echo "</td>\n";
 }

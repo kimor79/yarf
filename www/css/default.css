@@ -62,6 +62,10 @@ body {
 	vertical-align: top;
 }
 
+#gv_main .nodelistsum {
+	cursor: pointer;
+}
+
 .gv_nodelist {
 	display: none;
 }

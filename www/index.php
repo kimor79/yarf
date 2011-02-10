@@ -131,6 +131,28 @@ if(!empty($row_images)) {
 			$key, $img);
 	}
 }
+
+if(!empty($row_included)) {
+	foreach($row_included as $row => $junk) {
+		printf("
+	var list%s = document.getElementById('nodelist%s');
+	var panel%s = new YAHOO.widget.Panel('panel%s', {
+		close: true,
+		context: ['nodelistsum%s', 'tl', 'tl', ['beforeShow']],
+		draggable: true,
+		visible: false,
+		zindex: 4
+	});
+
+	panel%s.render(document.body);
+	panel%s.setBody(list%s);
+	list%s.style.display = 'inline';
+	Event.addListener('nodelistsum%s', 'click', panel%s.show, panel%s, true);
+",
+		$row, $row, $row, $row, $row, $row,
+		$row, $row, $row, $row, $row, $row);
+	}
+}
 ?>
 });
 
