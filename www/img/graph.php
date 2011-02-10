@@ -145,12 +145,6 @@ if(empty($nodes)) {
 }
 
 $rrd = $api->rrdHeader($nodes, $api->getTitle(count($nodes)));
-
-if(get_config('rrd', 'delay') > 0) {
-	$rrd[] = '--end';
-	$rrd[] = sprintf("now-%sseconds", get_config('rrd', 'delay'));
-}
-
 $rrd = array_merge($rrd, $api->rrdOptions());
 
 $combine = array();

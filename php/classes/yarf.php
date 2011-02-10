@@ -409,7 +409,9 @@ class Yarf extends ApiProducerDetails {
 	 * @return array
 	 */
 	public function rrdHeader($nodes = array(), $plugin = '') {
+		$end = '';
 		$rrd = array('-t');
+		$start = '';
 
 		$label = 'Combined';
 
@@ -424,39 +426,44 @@ class Yarf extends ApiProducerDetails {
 
 		$label .= ': ' . $plugin;
 
+		if(get_config('rrd', 'delay') > 0) {
+			$end = sprintf("now-%sseconds",
+				get_config('rrd', 'delay'));
+		}
+
 		if(array_key_exists('archive', $this->request)) {
 			$label .= ' - ' . $this->request['archive'];
 
 			$file = $this->findArchive($this->request['archive'])
 				. '/timestamp';
 			if(is_file($file)) {
-				$time = file_get_contents($file);
-				$time = trim($time);
-
-				$rrd[] = '--end';
-				$rrd[] = $time;
+				$end = file_get_contents($file);
+				$end = trim($end);
 			}
 		}
                 
 		$rrd[] = $label;
 
-		$time = '';
-
 		if(array_key_exists('t_val', $this->request)) {
-			$time = $this->request['t_val'];
+			$start = $this->request['t_val'];
 		}
 
 		if(array_key_exists('t_unit', $this->request)) {
-			if(empty($time)) {
-				$time = 1;
+			if(empty($start)) {
+				$start = 1;
 			}
 
-			$time .= $this->request['t_unit'];
+			$start .= $this->request['t_unit'];
 		}
 
-		if(!empty($time)) {
+		if(!empty($start)) {
 			$rrd[] = '--start';
-			$rrd[] = 'end-' . $time;
+			$rrd[] = 'end-' . $start;
+		}
+
+		if(!empty($end)) {
+			$rrd[] = '--end';
+			$rrd[] = $end;
 		}
 
 		return $rrd;
