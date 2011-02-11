@@ -249,7 +249,7 @@ class Yarf extends ApiProducerDetails {
 		}
 
 		foreach($files as $o_file) {
-			$file = str_replace(array('/', '.'), '_', $o_file);
+			$file = preg_replace('/[^\w]/', '_', $o_file);
 
 			foreach($sources as $ds => $junk) {
 				$avg = sprintf("DEF:%s%s%s=%s:%s:AVERAGE",
