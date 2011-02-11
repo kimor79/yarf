@@ -1,0 +1,19 @@
+These are very terse instructions for installing yarf.
+
+1) Copy php/ to <somewhere in php's include path>/yarf/, e.g.:
+	cp -R php /usr/local/include/php/yarf
+
+2) Make www/ via your webserver, e.g.:
+	cp -R www /usr/local/www/yarf
+
+	# In apache config
+	DocumentRoot /usr/local/www/yarf
+	<Directory /usr/local/www/yarf>
+		Order allow,deny
+		Allow from all
+	</Directory
+
+3) If needed, edit /usr/local/etc/yarf/config.ini
+
+4) Add to /usr/local/etc/yarf/data_types.php. You can create your own or
+   copy from etc/
