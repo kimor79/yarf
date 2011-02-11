@@ -151,7 +151,8 @@ if(array_key_exists($graph_num, $desired_graphs)) {
 				}
 			}
 		}
-		printf("value=\"%s\">%s</option>\n", $type, $type);
+		printf("value=\"%s\">%s</option>\n",
+			rawurlencode($type), $type);
 	}
 ?>
 </select>
