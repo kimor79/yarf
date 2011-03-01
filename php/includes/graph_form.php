@@ -44,35 +44,57 @@ if(array_key_exists('graph', $request)) {
  <tr>
   <td id="gf_left" width="250">
 <?php
-$quicklinks_file = get_config('quicklinks', 'file');
-if(file_exists($quicklinks_file)) {
-	$quicklinks = @file($quicklinks_file,
-		FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+function showQuickLinks($array) {
+	while(list($key, $value) = each($array)) {
+		echo " <li class=\"yuimenuitem\">\n";
 
-	if(!empty($quicklinks)) {
-?>
-<div id="quicknav">
-<label for="quicklink">Quick Links</label><br>
-<select id="quicklink" onChange="showQuickLink();">
- <option value=""></option>
-<?php
-		foreach($quicklinks as $line) {
-			if(substr($line, 0, 1) == '#') {
-				continue;
-			}
+		if(!is_array($value)) {
+			echo "<a class=\"yuimenuitemlabel\"";
+			printf(" href=\"%s\">%s</a>\n",
+				strstr($value, '?'), $key);
+			echo "</li>\n";
 
-			list($url, $desc) = explode(' ', $line, 2);
-			$url = strstr($url, '?');
-
-			echo ' <option ';
-			if('?' . $_SERVER['QUERY_STRING'] == $url) {
-				echo 'selected ';
-			}
-			printf("value=\"%s\">%s</option>\n", $url, $desc);
+			continue;
 		}
 
-		echo '</select>' . "\n";
-		echo '</div>';
+		echo "<a class=\"yuimenuitemlabel\" href=\"#\">";
+		printf("%s</a>\n", $key);
+		echo "<div class=\"yuimenu\">\n";
+		echo " <div class=\"bd\">\n";
+		echo "  <ul>\n";
+		showQuickLinks($value);
+		echo "  </ul>\n";
+		echo " </div>\n";
+		echo "</div>\n";
+		echo " </li>\n";
+	}
+}
+
+$quicklinks_file = get_config('quicklinks', 'file');
+if(file_exists($quicklinks_file)) {
+	$quicklinks = @yaml_parse_file($quicklinks_file);
+
+	if(is_array($quicklinks)) {
+?>
+   <div id="quicklinks" class="yuimenubar">
+    <div class="bd">
+     <ul>
+      <li class="yuimenubaritem">
+       <a class="yuimenubaritemlabel" href="#">Quicklinks</a>
+        <div class="yuimenu">
+         <div class="bd">
+          <ul>
+<?php
+		showQuickLinks($quicklinks);
+?>
+         </ul>
+        </div>
+       </div>
+      </li>
+     </ul>
+    </div>
+   </div>
+<?php
 	}
 }
 ?>

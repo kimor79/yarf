@@ -102,6 +102,7 @@ label {
 	text-align: center;
 }
 
-#quicknav {
+#quicklinks {
 	margin: 10px 10px 10px 10px;
+	width: 75px;
 }

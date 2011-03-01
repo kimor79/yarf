@@ -41,12 +41,6 @@ $yui = rtrim(get_config('yui', 'base_uri'), '/');
  <head>
   <title>YARF - Yet Another RRD Frontend</title>
 
-<style type="text/css">
-#quicklink {
-	width: 200px;
-}
-</style>
-
 <link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/reset-fonts-grids/reset-fonts-grids.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui; ?>/assets/skins/sam/skin.css">
 <script type="text/javascript" src="<?php echo $yui; ?>/utilities/utilities.js"></script> 
@@ -56,6 +50,7 @@ $yui = rtrim(get_config('yui', 'base_uri'), '/');
 <script type="text/javascript" src="<?php echo $yui; ?>/event-delegate/event-delegate-min.js"></script> 
 <script type="text/javascript" src="<?php echo $yui; ?>/resize/resize-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui; ?>/layout/layout-min.js"></script>
+<script type="text/javascript" src="<?php echo $yui; ?>/menu/menu-min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/css/default.css">
 
@@ -101,6 +96,10 @@ Event.onDOMReady(function() {
 	});
 
 	layout.render();
+
+	var menu = new YAHOO.widget.MenuBar('quicklinks');
+	menu.render();
+	menu.show();
 
 	loading = new YAHOO.widget.Panel('loading', {
 		close: false,
