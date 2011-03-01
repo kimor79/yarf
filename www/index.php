@@ -82,7 +82,8 @@ Event.onDOMReady(function() {
 				gutter: '0px 0px 5px 5px',
 				position: 'left',
 				resize: true,
-				width: 250
+				width: 250,
+				zIndex: 1
 			},
 			{
 				body: 'layouttop',
@@ -90,7 +91,9 @@ Event.onDOMReady(function() {
 				gutter: '5px 5px 5px 5px',
 				height: 150,
 				position: 'top',
-				resize: true
+				resize: true,
+				scroll: null,
+				zIndex: 2
 			}
 		]
 	});
