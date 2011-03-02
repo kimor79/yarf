@@ -83,7 +83,6 @@ Event.onDOMReady(function() {
 				position: 'left',
 				resize: true,
 				width: 250,
-				zIndex: 1
 			},
 			{
 				body: 'layouttop',
@@ -91,18 +90,18 @@ Event.onDOMReady(function() {
 				gutter: '5px 5px 5px 5px',
 				height: 150,
 				position: 'top',
-				resize: true,
 				scroll: null,
-				zIndex: 2
+				zIndex: 1
 			}
 		]
 	});
 
 	layout.render();
 
-	var menu = new YAHOO.widget.MenuBar('quicklinks');
+	var menu = new YAHOO.widget.MenuBar('quicklinks', {
+		autosubmenudisplay: true
+	});
 	menu.render();
-	menu.show();
 
 	loading = new YAHOO.widget.Panel('loading', {
 		close: false,
