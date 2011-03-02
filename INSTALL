@@ -1,5 +1,9 @@
 These are very terse instructions for installing yarf.
 
+Requires:
+ php5.2+ with ctype and rrd
+ https://github.com/kimor79/api_producer
+
 1) Copy php/ to <somewhere in php's include path>/yarf/, e.g.:
 	cp -R php /usr/local/include/php/yarf
 
