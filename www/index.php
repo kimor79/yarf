@@ -82,7 +82,7 @@ Event.onDOMReady(function() {
 				gutter: '0px 0px 5px 5px',
 				position: 'left',
 				resize: true,
-				width: 250,
+				width: 250
 			},
 			{
 				body: 'layouttop',
