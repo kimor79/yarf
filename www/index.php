@@ -52,7 +52,7 @@ $yui = rtrim(get_config('yui', 'base_uri'), '/');
 <script type="text/javascript" src="<?php echo $yui; ?>/layout/layout-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui; ?>/menu/menu-min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="/css/default.css">
+<link rel="stylesheet" type="text/css" href="<?php echo get_config('theme', 'css_path'); ?>">
 
  </head>
 
@@ -114,7 +114,7 @@ Event.onDOMReady(function() {
 	});
 
 	loading.setHeader('Loading, please wait...');
-	loading.setBody('<img src="<?php echo get_config('yui', 'loading_img'); ?>"/>');
+	loading.setBody('<img src="<?php echo get_config('theme', 'loading_img'); ?>"/>');
 	loading.render(document.body);
 
 	Event.on('top_hide', 'click', function(ev) {

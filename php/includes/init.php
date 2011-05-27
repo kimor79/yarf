@@ -51,9 +51,13 @@ function get_config($key = '', $sub = '') {
 			'paths' => '/var/db/collectd',
 		),
 
+		'theme' => array(
+			'css_path' => 'css/default.css',
+			'loading_img' => 'http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif',
+		),
+
 		'yui' => array(
 			'base_uri' => 'http://yui.yahooapis.com/2.8.2r1/build',
-			'loading_img' => 'http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif',
 		),
 	);
 
