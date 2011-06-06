@@ -181,6 +181,8 @@ while(list($junk, $node) = each($nodes)) {
 			$o_ds = $ds;
 			$ds = $key . $ds;
 
+			$ds = preg_replace('/[^\w]/', '_', $ds);
+
 			$percent['avg' . $ds] = sprintf(
 				"CDEF:%s%s=percent%s%s,total%s%s,/,100,*",
 				$ds, $node, $ds, $node, $o_ds, $node);
@@ -256,6 +258,8 @@ foreach($api->getDS() as $key => $values) {
 
 		$ds = $key . $ds;
 		$format = '%4.0lf%s';
+
+		$ds = preg_replace('/[^\w]/', '_', $ds);
 
 		if(array_key_exists('format', $data)) {
 			$format = $data['format'];

@@ -244,6 +244,8 @@ class Yarf extends ApiProducerDetails {
 		$num = 0;
 		$combine = array();
 
+		$prefix = preg_replace('/[^\w]/', '_', $prefix);
+
 		if($this->getConfig('percent')) {
 			$prefix = 'percent' . $prefix;
 		}
