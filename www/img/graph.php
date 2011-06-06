@@ -152,7 +152,7 @@ $count = 0;
 
 while(list($junk, $node) = each($nodes)) {
 	$r_node = $node;
-	$node = str_replace('.', '_', $node);
+	$node = preg_replace('/[a-z0-9_]/i', '_', $node);
 
 	$percent = array();
 	$t_count = 0;
