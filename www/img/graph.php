@@ -305,18 +305,30 @@ foreach($api->getDS() as $key => $values) {
 }
 
 $out_file = '/tmp/yarf-' . $_SERVER['UNIQUE_ID'] . mt_rand() . mt_rand();
-$return = rrd_graph($out_file, $rrd, count($rrd));
 
-if(!is_array($return)) {
-	$error = rrd_error();
-	if(empty($error)) {
-		$error = 'Unable to graph';
+if(class_exists('RRDGraph')) {
+	$graph = new RRDGraph($out_file);
+	$graph->setOptions($rrd);
+	if(!$graph->saveVerbose()) {
+		$api->sendHeaders();
+		$api->showOutput('500', 'Unable to graph', $rrd);
+		@unlink($out_file);
+		exit(0);
 	}
+} else {
+	$return = rrd_graph($out_file, $rrd, count($rrd));
 
-	$api->sendHeaders();
-	$api->showOutput('500', $error, $rrd);
-	@unlink($out_file);
-	exit(0);
+	if(!is_array($return)) {
+		$error = rrd_error();
+		if(empty($error)) {
+			$error = 'Unable to graph';
+		}
+
+		$api->sendHeaders();
+		$api->showOutput('500', $error, $rrd);
+		@unlink($out_file);
+		exit(0);
+	}
 }
 
 if(array_key_exists('debug', $input)) {
