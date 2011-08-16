@@ -288,6 +288,10 @@ $data_types = array(
 	),
 
 	'Traffic - Bits' => array(
+		'class' => array(
+			'file' => 'interfaces',
+			'name' => 'YarfInterfaces',
+		),
 		'class_options' => array(
 			'datasources' => array(
 				array(
@@ -307,8 +311,8 @@ $data_types = array(
 				),
 			),
 			'paths' => array(
-				'interface/if_octets-*',
-				'snmp/if_octets_u-*',
+				'interface/if_octets-',
+				'snmp/if_octets_u-',
 			),
 			'rrd' => array(
 				'-v' => 'Bits/sec',
@@ -318,6 +322,10 @@ $data_types = array(
 	),
 
 	'Traffic - Errors' => array(
+		'class' => array(
+			'file' => 'interfaces',
+			'name' => 'YarfInterfaces',
+		),
 		'class_options' => array(
 			'datasources' => array(
 				array(
@@ -335,8 +343,8 @@ $data_types = array(
 				),
 			),
 			'paths' => array(
-				'interface/if_errors-*',
-				'snmp/if_errors_u-*',
+				'interface/if_errors-',
+				'snmp/if_errors_u-',
 			),
 			'rrd' => array(
 				'-v' => 'Errors/sec',
@@ -346,6 +354,10 @@ $data_types = array(
 	),
 
 	'Traffic - Packets' => array(
+		'class' => array(
+			'file' => 'interfaces',
+			'name' => 'YarfInterfaces',
+		),
 		'class_options' => array(
 			'datasources' => array(
 				array(
@@ -363,8 +375,8 @@ $data_types = array(
 				),
 			),
 			'paths' => array(
-				'interface/if_packets-*',
-				'snmp/if_packets_u-*',
+				'interface/if_packets-',
+				'snmp/if_packets_u-',
 			),
 			'rrd' => array(
 				'-v' => 'Packets/sec',
