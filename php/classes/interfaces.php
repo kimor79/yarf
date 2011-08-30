@@ -73,8 +73,15 @@ class YarfInterfaces extends Yarf {
 		$options['ext'] = '*';
 
 		if(array_key_exists('interface', $this->request)) {
-			$options['ext'] = sprintf("{%s}", implode(',',
-				$this->request['interface']));
+			$interfaces = array();
+			while(list($junk, $iface) =
+					each($this->request['interface'])) {
+				$interfaces[] = str_replace(',', '\,', $iface);
+			}
+			reset($this->request['interface']);
+
+			$options['ext'] = sprintf("{%s}",
+				implode(',', $interfaces));
 		}
 
 		return parent::rrdFiles($node, $options);
