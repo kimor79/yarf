@@ -36,7 +36,6 @@ class YarfInterfaces extends Yarf {
 	protected $ifname_replace = array(
 		'/',
 		'.',
-		':',
 	);
 	protected $interfaces = array();
 
