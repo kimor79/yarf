@@ -187,7 +187,7 @@ if($CGI->param('expression')) {
 		_exit(400, 'Nodegroups: ' . $NGCLIENT->errstr(), {});
 	}
 } elsif($CGI->param('node')) {
-	$NODES = ($CGI->param('node'));
+	$NODES = [$CGI->param('node')];
 } else {
 	_exit(400, 'Missing expression/node', {});
 }
