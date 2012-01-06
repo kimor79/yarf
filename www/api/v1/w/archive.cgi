@@ -9,6 +9,7 @@ use warnings;
 
 use CGI;
 use Config::Simple;
+use File::Basename;
 use File::Copy::Recursive qw(dircopy);
 use File::Path qw(make_path);
 use File::Temp qw(tempdir);
@@ -82,17 +83,22 @@ sub archive {
 		return 0;
 	}
 
-	eval {
-		make_path($DIRECTORY . '/' . $node);
-	};
-
-	if($@) {
-		return 0;
-	}
-
 	my $success = 0;
 	foreach my $path (@globs) {
-		if(dircopy($path, $DIRECTORY . '/' . $node)) {
+		my $t_path = dirname($path);
+		$t_path =~ s|/|_|g;
+
+		my $dir = $DIRECTORY . '/' . $t_path . '/' . $node;
+
+		eval {
+			make_path($dir);
+		};
+
+		if($@) {
+			return 0;
+		}
+
+		if(dircopy($path, $dir)) {
 			$success++;
 		}
 	}

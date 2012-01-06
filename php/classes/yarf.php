@@ -336,7 +336,7 @@ class Yarf extends ApiProducerDetails {
 			$archive =
 				$this->findArchive($this->request['archive']);
 			if($archive) {
-				$search = array($archive);
+				$search = array($archive, $archive . '/*');
 			}
 		}
 
