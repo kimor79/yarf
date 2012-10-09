@@ -2,7 +2,7 @@
 
 /**
 
-Copyright (c) 2010, Kimo Rosenbaum and contributors
+Copyright (c) 2010-2012, Kimo Rosenbaum and contributors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -107,8 +107,8 @@ if(!isset($default_format)) {
 $yarf->setParameters($request, array('outputFormat' => $default_format));
 
 if(get_config('nodes', 'use_nodegroups')) {
-	require_once('nodegroups_client/classes/client.php');
-	$ngclient = new NodegroupsClient();
+	require_once('api_consumer/v2/classes/consumer.php');
+	$ngclient = new APIConsumerV2(get_config('nodegroups-api'));
 } else {
 	if(get_config('nodes', 'file')) {
 		$available_nodes = file(get_config('nodes', 'file'),

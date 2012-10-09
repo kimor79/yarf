@@ -2,7 +2,7 @@
 
 /**
 
-Copyright (c) 2010, Kimo Rosenbaum and contributors
+Copyright (c) 2010-2012, Kimo Rosenbaum and contributors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -178,10 +178,13 @@ class Yarf extends ApiProducerDetails {
 		$nodes = array();
 
 		if(isset($ngclient)) {
-			$parsed =
-				$ngclient->getNodesFromExpression($expression);
+			$parsed = $ngclient->getDetails(
+				'/v2/r/expression/parse_expression.php',
+				array('post' => array('expression' => $expression)));
 			if(!empty($parsed)) {
-				$nodes = $parsed;
+				if(array_key_exists('nodes', $parsed)) {
+					$nodes = $parsed['nodes'];
+				}
 			}
 
 			return $nodes;
